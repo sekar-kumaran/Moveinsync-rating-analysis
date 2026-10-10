@@ -203,8 +203,8 @@ try:
     doc = docx.Document()
     doc.add_heading('MoveInSync - 30-Day Action Plan', 0)
 
-    for w, t, a, m in sprint:
-        action_text = _re.sub(r"<[^>]+>", "", a).replace("&middot;", ".").replace("&gt;", ">").replace("&lt;", "<")
+    for w, t, title, details, m in sprint:
+        action_text = _re.sub(r"<[^>]+>", "", title + " " + details).replace("&middot;", ".").replace("&gt;", ">").replace("&lt;", "<")
         metric_text = _re.sub(r"<[^>]+>", "", m).replace("&middot;", ".").replace("&gt;", ">").replace("&lt;", "<")
         
         doc.add_heading(f"{w} ({t})", level=2)
