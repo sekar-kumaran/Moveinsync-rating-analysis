@@ -37,6 +37,32 @@ cats = category_stats(df)
 page_hero("Complaint Deep Dive",
           "Keyword-classified complaints across 10,000+ reviews -- what employees keep saying, and when each issue spikes")
 
+# Date filtering
+st.markdown("<br>", unsafe_allow_html=True)
+c_start, c_end = st.columns(2)
+min_date, max_date = df["review_date"].min().date(), df["review_date"].max().date()
+with c_start:
+    start_date = st.date_input("Start Date", min_date, min_value=min_date, max_value=max_date)
+with c_end:
+    end_date = st.date_input("End Date", max_date, min_value=min_date, max_value=max_date)
+
+df_filtered = df[(df["review_date"].dt.date >= start_date) & (df["review_date"].dt.date <= end_date)]
+if df_filtered.empty:
+    st.warning("No reviews in selected date range.")
+    st.stop()
+
+cats = category_stats(df_filtered)
+
+# Overlap & Unclassified info
+cat_cols = [c for c in CAT_COLS if c in df_filtered.columns]
+df_filtered["is_categorized"] = df_filtered[cat_cols].max(axis=1) if cat_cols else 0
+unclassified_count = len(df_filtered) - int(df_filtered["is_categorized"].sum())
+unclassified_share = (unclassified_count / len(df_filtered)) * 100
+
+st.info(f"**Sample Size:** {len(df_filtered):,} reviews in selected range. "
+        f"**Unclassified:** {unclassified_count:,} reviews ({unclassified_share:.1f}%) did not match any category keywords. "
+        f"**Note:** A single review may contain multiple complaints, so theme counts can overlap and sum to >100%.")
+
 # Category KPIs
 st.markdown("<br>", unsafe_allow_html=True)
 cols = st.columns(len(cats))
@@ -96,9 +122,9 @@ section("02", "Issue Intensity by Star Rating",
 heat = []
 for r in [1, 2, 3, 4, 5]:
     row = {"Rating": f"{r} star"}
-    sub = df[df["star_rating"] == r]
+    sub = df_filtered[df_filtered["star_rating"] == r]
     for c in CAT_COLS:
-        if c in df.columns:
+        if c in df_filtered.columns:
             row[CAT_LABELS[c]] = int(sub[c].sum())
     heat.append(row)
 heat_df = pd.DataFrame(heat).set_index("Rating")
@@ -125,8 +151,8 @@ section("03", "Complaint Category Trend Over Time",
         "Select a category to see how often it is mentioned month-over-month with the mean rating for those reviews")
 sel_cat = st.selectbox("Category to track", list(CAT_LABELS.values()))
 cat_col = {v: k for k, v in CAT_LABELS.items()}[sel_cat]
-if cat_col in df.columns:
-    cat_monthly = (df[df[cat_col] == 1]
+if cat_col in df_filtered.columns:
+    cat_monthly = (df_filtered[df_filtered[cat_col] == 1]
                    .groupby("year_month")
                    .agg(count=(cat_col, "sum"), avg_rating=("star_rating", "mean"))
                    .reset_index())
@@ -163,8 +189,8 @@ section("04", "Representative Review Excerpts by Category",
         "Real user quotes validating each complaint theme -- select a category to load samples")
 sel_cat2 = st.selectbox("Show excerpts for", list(CAT_LABELS.values()), key="exc_sel")
 cat_col2 = {v: k for k, v in CAT_LABELS.items()}[sel_cat2]
-if cat_col2 in df.columns:
-    sample = (df[(df[cat_col2] == 1) & (df["star_rating"] <= 2)]
+if cat_col2 in df_filtered.columns:
+    sample = (df_filtered[(df_filtered[cat_col2] == 1) & (df_filtered["star_rating"] <= 2)]
               .dropna(subset=["review_text"])
               .sort_values("star_rating")
               .head(6))

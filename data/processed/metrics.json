@@ -1,0 +1,33 @@
+{
+    "dataset": {
+        "raw_reviews": 10144,
+        "unique_review_ids": 10144,
+        "clean_reviews": 10106,
+        "cat_gps_location_total": 1415,
+        "cat_gps_location_low_star": 810,
+        "cat_crashes_login_total": 1017,
+        "cat_crashes_login_low_star": 793,
+        "cat_eta_pickup_total": 597,
+        "cat_eta_pickup_low_star": 382,
+        "cat_driver_comms_total": 798,
+        "cat_driver_comms_low_star": 490,
+        "cat_noshow_checkin_total": 132,
+        "cat_noshow_checkin_low_star": 99,
+        "unclassified_reviews": 6910,
+        "unclassified_share": 0.684,
+        "duplicate_texts": 2115.0,
+        "low_star_reviews": 4153,
+        "low_star_share": 0.411,
+        "mean_rating": 3.21
+    },
+    "ml_model": {
+        "model_version": "1.0.0",
+        "model_artifact": "low_star_classifier.pkl",
+        "positive_class": "1-2 stars",
+        "split_strategy": "Random split after dropping exact duplicate texts",
+        "ml_train_size": 6392,
+        "ml_test_size": 1599,
+        "f1_macro": 0.843,
+        "roc_auc": 0.909
+    }
+}

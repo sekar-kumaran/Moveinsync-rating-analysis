@@ -45,6 +45,8 @@ def load_reviews() -> pd.DataFrame:
             t = re.sub(r"[^a-z\s]", " ", t)
             return re.sub(r"\s+", " ", t).strip()
         df["clean_text"] = df["review_text"].apply(_clean)
+        
+    validate_review_schema(df)
     return df
 
 
@@ -80,18 +82,44 @@ def rating_distribution(df: pd.DataFrame) -> pd.DataFrame:
     return rd
 
 
+def validate_review_schema(df: pd.DataFrame):
+    """Fails fast if the loaded dataset does not conform to the expected schema."""
+    missing_cols = [c for c in CAT_COLS if c not in df.columns]
+    if missing_cols:
+        raise ValueError(f"Canonical dataset is missing required category columns: {missing_cols}")
+    if not ((df["star_rating"] >= 1) & (df["star_rating"] <= 5)).all():
+        raise ValueError("star_rating column contains values outside 1-5.")
+    if "review_id" not in df.columns or df["review_id"].isnull().any():
+        raise ValueError("Missing or null review_ids in the dataset.")
+
 @st.cache_data(show_spinner=False)
 def category_stats(df: pd.DataFrame) -> pd.DataFrame:
     rows = []
+    total_low_star_reviews = max((df["star_rating"] <= 2).sum(), 1)
+    
     for col in CAT_COLS:
-        if col not in df.columns:
-            continue
         label = CAT_LABELS[col]
-        total      = int(df[col].sum())
-        low_total  = int(df[df["star_rating"] <= 2][col].sum())
-        pct_of_low = round(low_total / max((df["star_rating"] <= 2).sum(), 1) * 100, 1)
-        rows.append(dict(col=col, label=label, total=total,
-                         low_total=low_total, pct_of_low=pct_of_low))
+        
+        # 1. Theme review count
+        total = int(df[col].sum())
+        
+        # 2. Low-star theme count
+        low_total = int(df[df["star_rating"] <= 2][col].sum())
+        
+        # 3. Low-star share for a theme
+        low_star_share = round((low_total / max(total, 1)) * 100, 1)
+        
+        # 4. Theme prevalence among low-star reviews
+        prevalence = round((low_total / total_low_star_reviews) * 100, 1)
+        
+        rows.append({
+            "col": col, 
+            "label": label, 
+            "total": total,
+            "low_total": low_total,
+            "low_star_share": low_star_share,
+            "pct_of_low": prevalence
+        })
     return pd.DataFrame(rows).sort_values("low_total", ascending=False)
 
 

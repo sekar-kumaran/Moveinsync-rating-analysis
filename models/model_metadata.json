@@ -1,5 +1,10 @@
 {
-    "model_type": "TF-IDF + Logistic Regression",
-    "f1_macro": 0.8573019408208717,
-    "roc_auc": 0.9330405577044121
+    "model_version": "1.0.0",
+    "model_artifact": "low_star_classifier.pkl",
+    "positive_class": "1-2 stars",
+    "split_strategy": "Random split after dropping exact duplicate texts",
+    "ml_train_size": 6392,
+    "ml_test_size": 1599,
+    "f1_macro": 0.843,
+    "roc_auc": 0.909
 }

@@ -40,14 +40,27 @@ with st.sidebar:
     st.markdown("<p style='font-size:0.72rem;color:#93c5fd'>App: <code style='color:#60a5fa'>com.moveinsync.ets</code><br>Source: Google Play Store<br>Analysis: FDE Candidate</p>", unsafe_allow_html=True)
 
 # ── Load data ─────────────────────────────────────────────────
+import json
+
+metrics_path = Path("data/processed/metrics.json")
+if not metrics_path.exists():
+    st.error("No metrics data found. Please run `python src/generate_metrics.py` first.")
+    st.stop()
+
+with open(metrics_path, "r") as f:
+    full_data = json.load(f)
+    if "dataset" not in full_data:
+        st.error("Metrics artifact is malformed. Please run `python src/generate_metrics.py`.")
+        st.stop()
+    metrics = full_data["dataset"]
+
 df = load_reviews()
 if df.empty:
-    st.error("No processed data found. Please run `notebooks/01_moveinsync_eda_and_ml.ipynb` first.")
+    st.error("No processed data found.")
     st.stop()
 
 rd    = rating_distribution(df)
 m     = monthly_stats(df)
-cats  = category_stats(df)
 
 # ── Hero ──────────────────────────────────────────────────────
 page_hero(
@@ -57,9 +70,9 @@ page_hero(
 
 # ── KPI Row ───────────────────────────────────────────────────
 c1, c2, c3, c4, c5 = st.columns(5)
-kpi_card(c1, f"{len(df):,}",     "Reviews Analysed",   "Google Play &middot; public",           "neu", "blue")
-kpi_card(c2, f"{df['star_rating'].mean():.2f}&#9733;", "Mean Rating", "Below 4.0 target",      "bad", "red")
-kpi_card(c3, f"{(df['star_rating']<=2).mean()*100:.1f}%", "1&#9733; & 2&#9733; Share", "Primary focus", "bad", "red")
+kpi_card(c1, f"{metrics['clean_reviews']:,}", "Reviews Analysed", "Google Play &middot; public", "neu", "blue")
+kpi_card(c2, f"{metrics['mean_rating']:.2f}&#9733;", "Mean Rating", "Below 4.0 target", "bad", "red")
+kpi_card(c3, f"{metrics['low_star_share']*100:.1f}%", "1&#9733; & 2&#9733; Share", "Primary focus", "bad", "red")
 kpi_card(c4, f"{(df['star_rating']==5).mean()*100:.1f}%", "5&#9733; Share",  "Promoter base",  "good","green")
 kpi_card(c5, f"{df['developer_reply'].notna().mean()*100:.1f}%", "Dev Reply Rate", "Engagement gap", "bad","violet")
 

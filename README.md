@@ -60,12 +60,8 @@ cd moveinsync-fde-case-study
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the full pipeline (collect → clean → classify → analyze → dashboard data)
-python src/collect_reviews.py --app-id com.moveinsync.ets --lang en --country in --count 5000
-python src/clean_reviews.py
-python src/classify_reviews.py
-python src/analyze_reviews.py
-python src/build_dashboard_data.py
+# Run the reproducible data pipeline & metrics generation
+python src/generate_metrics.py
 
 # Launch the dashboard
 streamlit run app/streamlit_app.py
@@ -74,7 +70,6 @@ streamlit run app/streamlit_app.py
 Or using Make (Linux/Mac):
 ```bash
 make install
-make pipeline
 make dashboard
 ```
 
@@ -126,12 +121,9 @@ moveinsync-fde-case-study/
 
 | Step | Script | Input | Output |
 |------|--------|-------|--------|
-| 1. Collect | `src/collect_reviews.py` | Google Play API | `data/raw/google_play_reviews.csv` |
-| 2. Clean | `src/clean_reviews.py` | raw CSV | `data/processed/google_play_reviews_clean.csv` |
-| 3. Classify | `src/classify_reviews.py` | clean CSV | `data/processed/google_play_reviews_classified.csv` |
-| 4. Analyze | `src/analyze_reviews.py` | classified CSV | `reports/figures/*.png`, `analysis_summary.json` |
-| 5. Dashboard data | `src/build_dashboard_data.py` | classified CSV | `data/processed/dashboard_*.json` |
-| 6. Dashboard | `app/streamlit_app.py` | dashboard JSON | Interactive web app |
+| 1. Collect | `scripts/collect_reviews.py` | Google Play API | `data/raw/google_play_reviews.csv` |
+| 2. Generate Metrics & ML | `src/generate_metrics.py` | raw CSV | `data/processed/metrics.json`, `clean.csv`, `models/*.pkl` |
+| 3. Dashboard | `app/streamlit_app.py` | processed data | Interactive web app |
 
 ---
 

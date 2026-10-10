@@ -37,16 +37,16 @@ page_hero("ML Triage Classifier",
           "TF-IDF + Logistic Regression trained to predict low-star reviews from free-text -- enabling automatic severity triage of support tickets")
 
 if pipeline is None:
-    st.warning("Model not found. Run notebooks/01_moveinsync_eda_and_ml.ipynb first.")
+    st.warning("Model not found. Run python src/generate_metrics.py first.")
     st.stop()
 
 # Metric KPIs
-section("M", "Model Performance Metrics", "Evaluated on held-out 20% test set -- never seen during training")
+section("M", "Model Performance Metrics", "Evaluated on held-out test set -- never seen during training")
 c1, c2, c3, c4 = st.columns(4)
-kpi_card(c1, f"{meta.get('roc_auc', 0):.4f}",  "ROC-AUC Score",     "1.0 = perfect",     "good", "blue")
-kpi_card(c2, f"{meta.get('f1_macro', 0):.4f}", "F1-Macro",          "vs baseline ~0.65", "good", "teal")
-kpi_card(c3, meta.get("model_type", "LogReg"),  "Algorithm",         "Interpretable",     "neu",  "violet")
-kpi_card(c4, "80 / 20",                          "Train / Test Split", "Stratified",        "neu",  "green")
+kpi_card(c1, f"{meta.get('roc_auc', 0):.3f}",  "ROC-AUC Score",     "1.0 = perfect",     "good", "blue")
+kpi_card(c2, f"{meta.get('f1_macro', 0):.3f}", "F1-Macro",          "Balanced accuracy metric", "good", "teal")
+kpi_card(c3, f"{meta.get('ml_test_size', 0):,}",  "Test Set Size",     "Samples evaluated on", "neu",  "violet")
+kpi_card(c4, meta.get("split_strategy", "Random"), "Split Strategy", "To prevent text leakage", "neu",  "green")
 st.markdown("<br>", unsafe_allow_html=True)
 
 info_box("""
@@ -147,34 +147,31 @@ if st.button("Predict Severity", type="primary"):
         st.warning("Please enter some text.")
     else:
         with st.spinner("Running inference..."):
-            def clean(t):
-                t = str(t).lower()
-                t = re.sub(r"http\S+", " ", t)
-                t = re.sub(r"[^a-z\s]", " ", t)
-                return re.sub(r"\s+", " ", t).strip()
-
-            cleaned  = clean(review_input)
-            prob     = pipeline.predict_proba([cleaned])[0]
-            pred     = pipeline.predict([cleaned])[0]
-            low_prob = prob[1]
-            is_low   = (pred == 1)
-
-        col_res, col_detail = st.columns([1, 2])
-        with col_res:
-            if is_low:
-                st.markdown(
-                    f"<div class='predict-low'>"
-                    f"<div class='predict-label' style='color:#dc2626'>LOW-STAR SIGNAL</div>"
-                    f"<div class='predict-sub' style='color:#7f1d1d'>Predicts a 1 or 2 star experience"
-                    f"<br><b>{low_prob*100:.1f}% confidence</b></div></div>",
-                    unsafe_allow_html=True)
-            else:
-                st.markdown(
-                    f"<div class='predict-high'>"
-                    f"<div class='predict-label' style='color:#15803d'>POSITIVE SIGNAL</div>"
-                    f"<div class='predict-sub' style='color:#14532d'>Predicts a 3-5 star experience"
-                    f"<br><b>{(1-low_prob)*100:.1f}% confidence</b></div></div>",
-                    unsafe_allow_html=True)
+            from moveinsync.inference import predict_low_star
+            result = predict_low_star(review_input)
+            
+        if result["error"]:
+            st.error(result["error"])
+        else:
+            is_low = result["is_low_star"]
+            low_prob = result["confidence"] if is_low else 1 - result["confidence"]
+            
+            col_res, col_detail = st.columns([1, 2])
+            with col_res:
+                if is_low:
+                    st.markdown(
+                        f"<div class='predict-low'>"
+                        f"<div class='predict-label' style='color:#dc2626'>LOW-STAR SIGNAL</div>"
+                        f"<div class='predict-sub' style='color:#7f1d1d'>Predicts a 1 or 2 star experience"
+                        f"<br><b>{low_prob*100:.1f}% confidence</b></div></div>",
+                        unsafe_allow_html=True)
+                else:
+                    st.markdown(
+                        f"<div class='predict-high'>"
+                        f"<div class='predict-label' style='color:#15803d'>POSITIVE SIGNAL</div>"
+                        f"<div class='predict-sub' style='color:#14532d'>Predicts a 3-5 star experience"
+                        f"<br><b>{(1-low_prob)*100:.1f}% confidence</b></div></div>",
+                        unsafe_allow_html=True)
 
         with col_detail:
             st.markdown("<br>", unsafe_allow_html=True)

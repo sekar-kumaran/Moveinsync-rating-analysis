@@ -5,3 +5,8 @@ __pycache__/
 venv/
 .pytest_cache/
 .streamlit/
+*.zip
+archive/
+scratch/
+PROJECT_AUDIT.md
+data/sample/

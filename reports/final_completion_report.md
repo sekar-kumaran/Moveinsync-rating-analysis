@@ -17,8 +17,8 @@
 
 ## 3. Dataset & Data Quality Results
 - **Collected**: 10,144 raw reviews from the Google Play Store (app `com.moveinsync.ets`).
-- **Data Quality**: Identified a small number of duplicated `review_id`s and missing text rows. Filtered invalid star ratings and short texts (<5 characters).
-- **Processed**: The cleaned dataset contains 10,123 reviews, ensuring high fidelity for EDA and ML.
+- **Data Quality**: Identified 1,992 duplicate text reviews.
+- **Processed**: The cleaned dataset contains 10,144 valid reviews (duplicates kept for EDA), but exact text duplicates are dropped before ML training to prevent leakage.
 
 ## 4. EDA Findings
 - **Overall Rating**: The application suffers from a significant volume of 1-star reviews.
@@ -31,9 +31,8 @@
 - **Target Task**: Predict whether a review implies a **LOW STAR RATING (1-2 stars)** based solely on the review text. 
 - **Methodology**: Keyword-based classification was used for extracting issue themes (e.g., GPS, crashes), while a TF-IDF + Logistic Regression model was trained for the sentiment binary prediction task.
 - **Validation**: 
-  - Majority Class Baseline: F1-Macro ~ 0.65
-  - TF-IDF + Logistic Regression: F1-Macro ~ 0.88, ROC-AUC > 0.90.
-- **Final Model Artifact**: Saved as a complete Scikit-Learn pipeline to `models/low_star_classifier.pkl` and metadata to `models/model_metadata.json`.
+  - TF-IDF + Logistic Regression: F1-Macro ~ 0.839, ROC-AUC > 0.908.
+- **Final Model Artifact**: Saved as a complete Scikit-Learn pipeline to `models/low_star_classifier.pkl` and metadata to `data/processed/metrics.json`.
 
 ## 6. Dashboard
 - **Entry Point**: `app/streamlit_app.py`

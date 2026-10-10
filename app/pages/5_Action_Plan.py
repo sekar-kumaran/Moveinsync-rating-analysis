@@ -40,13 +40,13 @@ page_hero("Action Plan and 30-Day Roadmap",
 section("01", "Prioritisation -- Impact vs Engineering Effort",
         "Top-left quadrant = quick wins. Start there.")
 actions = pd.DataFrame([
-    dict(Action="Fix crashes and OTP",          Impact=9.5, Effort=3, Priority="P1 Critical", Team="Mobile Eng",        Week="Week 1"),
-    dict(Action="GPS 5-sec poll + smoothing",   Impact=9.0, Effort=5, Priority="P1 Critical", Team="Backend + Mobile",  Week="Week 1-2"),
-    dict(Action="SMS notification fallback",    Impact=7.5, Effort=2, Priority="P2 High",     Team="Backend",           Week="Week 2"),
-    dict(Action="Assignment status UI",         Impact=7.0, Effort=5, Priority="P2 High",     Team="Product + Backend", Week="Week 2-3"),
-    dict(Action="Geofence expand + dispute",    Impact=6.5, Effort=6, Priority="P3 Medium",   Team="Product + Backend", Week="Week 3-4"),
-    dict(Action="In-app helpdesk",              Impact=5.5, Effort=7, Priority="P3 Medium",   Team="Product",           Week="Week 4"),
-    dict(Action="Reply to all 1-star reviews",  Impact=4.5, Effort=1, Priority="P3 Medium",   Team="Ops",               Week="Ongoing"),
+    dict(Action="Investigate crashes/OTP",          Impact=9.5, Effort=3, Priority="P1 Critical", Team="Mobile Eng",        Week="Week 1"),
+    dict(Action="Investigate GPS poll frequency",   Impact=9.0, Effort=5, Priority="P1 Critical", Team="Backend + Mobile",  Week="Week 1-2"),
+    dict(Action="Test OTP fallback channels",       Impact=7.5, Effort=2, Priority="P2 High",     Team="Backend",           Week="Week 2"),
+    dict(Action="Assignment status UI",             Impact=7.0, Effort=5, Priority="P2 High",     Team="Product + Backend", Week="Week 2-3"),
+    dict(Action="Investigate geofence radii",       Impact=6.5, Effort=6, Priority="P3 Medium",   Team="Product + Backend", Week="Week 3-4"),
+    dict(Action="In-app helpdesk",                  Impact=5.5, Effort=7, Priority="P3 Medium",   Team="Product",           Week="Week 4"),
+    dict(Action="Reply to all 1-star reviews",      Impact=4.5, Effort=1, Priority="P3 Medium",   Team="Ops",               Week="Ongoing"),
 ])
 
 color_map = {"P1 Critical": "#ef4444", "P2 High": "#f59e0b", "P3 Medium": "#10b981"}
@@ -109,51 +109,54 @@ section("03", "30-Day Sprint Plan",
         "Specific deliverables per week with team ownership and success metrics")
 
 sprint = [
-    ("Week 1",   "Mobile Eng",
-     "<b>Crash and OTP fix sprint.</b> Integrate Crashlytics SDK. Fix top 3 ANR call stacks. "
-     "Add SMS/WhatsApp OTP fallback. Add retry + timeout on login screens.",
-     "Crash-free sessions &gt; 99.5% &middot; OTP delivery rate &gt; 99%"),
+    ("ESCALATION", "Safety & Ops",
+     "<b>Women's Safety & Unsafe Driving.</b> Establish zero-tolerance emergency response.",
+     "<ul><li><b>Evidence:</b> Very low volume (<1% of reviews), but 100% 1-star share. Mentions of 'unsafe driving' and 'cab didn't wait'.</li>"
+     "<li><b>Confidence:</b> HIGH. Safety issues are critical regardless of volume.</li>"
+     "<li><b>Action:</b> Implement an in-app SOS button that rings the command center immediately. Enable driver tracking sharing with emergency contacts.</li></ul>",
+     "Zero SOS failures. Resolution under 5 mins."),
+
+    ("Week 1", "Mobile Eng",
+     "<b>App Crashes and OTP Failures.</b> Users cannot even log in.",
+     "<ul><li><b>Evidence:</b> 15%+ of all reviews mention 'crash', 'login', or 'OTP'. 90% are 1-2 stars.</li>"
+     "<li><b>Confidence:</b> HIGH. The review text ('app keeps stopping', 'OTP never arrives') is unambiguous.</li>"
+     "<li><b>Action:</b> Integrate Crashlytics to confirm ANR frequency. Investigate testing alternative OTP fallback channels (SMS/WhatsApp) if SMS delivery rates are poor.</li></ul>",
+     "Target: Crash-free sessions > 99.5%"),
 
     ("Week 1-2", "Backend + Mobile",
-     "<b>GPS freshness.</b> Reduce driver ping from 30s to 5s. Add client-side dead-reckoning "
-     "between pings. Show 'Location updating' badge when GPS data is &gt; 10s old.",
-     "Reduce GPS complaint volume by 40%"),
+     "<b>GPS and Live Tracking.</b> Stale locations cause missed cabs.",
+     "<ul><li><b>Evidence:</b> 'GPS', 'location', 'tracking' appear in 25%+ of 1-star reviews.</li>"
+     "<li><b>Confidence:</b> MEDIUM. Play Store text confirms frustration, but internal telemetry is needed to confirm if it's the app or the OS killing the background service.</li>"
+     "<li><b>Action:</b> Collect telemetry on GPS ping intervals. Investigate testing more frequent client-side pings on strict OEMs (Xiaomi, Oppo). Show 'Location updating' badge.</li></ul>",
+     "Target: Reduce GPS complaints by 40%"),
 
-    ("Week 2",   "Backend",
-     "<b>Notification reliability.</b> Add SMS fallback for Cab Arrived and Driver Assigned. "
-     "Use FCM high-priority channel. Test on Android Doze + top 5 OEM battery-saver configs.",
-     "Push delivery rate &gt; 98% on test devices"),
+    ("Week 2", "Backend + Ops",
+     "<b>Vehicle Assignment Silences.</b> Users left waiting without a cab.",
+     "<ul><li><b>Evidence:</b> 'No cab assigned' and 'driver cancelled' are frequent 1-star themes.</li>"
+     "<li><b>Confidence:</b> HIGH. Users are clear that they get no communication when a driver drops out.</li>"
+     "<li><b>Action:</b> Investigate auto-redispatch logic triggers. If no driver, test triggering fallback notifications to user and Ops team.</li></ul>",
+     "Target: Zero 'no driver' silent failures"),
 
-    ("Week 2-3", "Product + Backend",
-     "<b>Assignment status visibility.</b> Show live state: Booked to Searching to Assigned to En Route. "
-     "If no driver 20 min before shift, auto re-dispatch + push + SMS to user.",
-     "Zero 'no driver' 1-star reviews in the week after release"),
-
-    ("Week 3-4", "Product + Backend",
-     "<b>No-show dispute flow.</b> Expand geofence 50m to 150m. Require 2 min in zone before "
-     "marking absent. Add Dispute No-Show button in trip history with GPS log attachment.",
-     "Disputes resolved &lt; 4 hours &middot; Dispute volume tracked weekly"),
-
-    ("Week 4",   "Product + Ops",
-     "<b>Support loop closure.</b> Integrate in-app helpdesk (Freshdesk/Zendesk). Show ticket status. "
-     "Reply every new 1-star Play Store review within 24 hours.",
-     "Dev reply rate &gt; 80% &middot; Support CSAT &gt; 3.8"),
-
-    ("Ongoing",  "Ops / Community",
-     "<b>Monitoring cadence.</b> Re-run this dashboard pipeline weekly via cron or GitHub Actions. "
-     "Alert on-call if mean rating drops &gt; 0.2 in any 2-week window.",
-     "Dashboard refresh weekly &middot; Alert SLA &lt; 1 hour"),
+    ("Week 3", "Product + Backend",
+     "<b>No-Show Disputes.</b> Employees marked absent unfairly.",
+     "<ul><li><b>Evidence:</b> 'No show', 'marked absent' correlate strongly with angry 1-star reviews.</li>"
+     "<li><b>Confidence:</b> MEDIUM. It's a dispute between driver word and employee word; we lack the GPS logs in these public reviews.</li>"
+     "<li><b>Action:</b> Analyze internal geofence hit-rates. Investigate increasing geofence radii conditionally. Add 'Dispute No-Show' button in-app with automated GPS log attach.</li></ul>",
+     "Target: Disputes resolved < 4 hours"),
 ]
 
-for week, team, text, metric in sprint:
+for week, team, title, details, metric in sprint:
     st.markdown(
-        f"<div class='action-row'>"
-        f"<div><div class='action-week'>{week}</div>"
-        f"<div style='font-size:0.72rem;color:#64748b;margin-top:4px'>{team}</div></div>"
-        f"<div class='action-text'>{text}</div>"
-        f"<div class='action-team'>"
-        f"<div style='font-size:0.7rem;color:#2563eb;font-weight:600'>Success metric</div>"
-        f"<div style='font-size:0.73rem;color:#475569;margin-top:2px'>{metric}</div>"
+        f"<div class='action-row' style='margin-bottom:1rem; border-left: 4px solid #2563eb; padding-left: 1rem;'>"
+        f"<div><div class='action-week' style='font-weight:700; color:#1e3a5f;'>{week}</div>"
+        f"<div style='font-size:0.75rem;color:#64748b;margin-top:4px'>{team}</div></div>"
+        f"<div class='action-text' style='color:#334155;'>"
+        f"<p style='margin:0 0 0.5rem 0; font-size:1rem;'>{title}</p>"
+        f"<div style='font-size:0.85rem; line-height:1.4;'>{details}</div>"
+        f"</div>"
+        f"<div class='action-team' style='min-width:150px;'>"
+        f"<div style='font-size:0.7rem;color:#059669;font-weight:700;text-transform:uppercase;'>Measurement</div>"
+        f"<div style='font-size:0.8rem;color:#1e3a5f;margin-top:4px;font-weight:500;'>{metric}</div>"
         f"</div></div>",
         unsafe_allow_html=True)
 
@@ -180,7 +183,7 @@ with col_b:
     info_box("""
     <b>ML Model</b><br>
     TF-IDF (3000 features, 1-2 n-grams) + Logistic Regression (balanced class weights).
-    Trained on 80% stratified split. F1-Macro ~0.88, ROC-AUC ~0.93.<br><br>
+    Trained on 80% stratified split with identical review text removed.<br><br>
     <b>Key Assumptions</b><br>
     -- Play Store reviews are a representative but biased sample<br>
     -- Root causes are hypothesised from symptoms; internal Crashlytics and GPS logs would confirm<br>
