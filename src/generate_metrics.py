@@ -1,13 +1,16 @@
 import pandas as pd
 import json
 import os
+import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, roc_auc_score, f1_score
+from sklearn.metrics import classification_report, roc_auc_score, f1_score, precision_score, recall_score
+from sklearn.dummy import DummyClassifier
 import joblib
 import traceback
+import hashlib
 
 def main():
     print("Loading raw data...")
@@ -19,15 +22,23 @@ def main():
 
     metrics = {}
     metrics["raw_reviews"] = len(raw_df)
-    metrics["unique_review_ids"] = raw_df["review_id"].nunique()
+    metrics["unique_review_ids"] = int(raw_df["review_id"].nunique())
     
-    # 1. Cleaning
+    # 1. Cleaning — document every exclusion step
     from moveinsync.preprocessing import clean_text
     clean_df = raw_df.drop_duplicates(subset=["review_id"]).copy()
+    step1_count = len(clean_df)
     clean_df = clean_df.dropna(subset=["review_text", "star_rating"])
+    step2_count = len(clean_df)
     clean_df["clean_text"] = clean_df["review_text"].apply(clean_text)
-    clean_df = clean_df[clean_df["clean_text"].str.len() > 0]
-    metrics["clean_reviews"] = len(clean_df)
+    clean_df = clean_df[clean_df["clean_text"].str.len() > 0]  # Drop reviews with empty text after cleaning (e.g. emoji-only)
+    step3_count = len(clean_df)
+    
+    metrics["excluded_duplicate_ids"] = int(len(raw_df) - step1_count)
+    metrics["excluded_null_text_or_rating"] = int(step1_count - step2_count)
+    metrics["excluded_too_short_text"] = int(step2_count - step3_count)
+    metrics["total_excluded"] = int(len(raw_df) - step3_count)
+    metrics["clean_reviews"] = step3_count
     
     clean_df["is_low_star"] = (clean_df["star_rating"] <= 2).astype(int)
     
@@ -63,6 +74,11 @@ def main():
 
     # 2. ML Training (preventing text leakage)
     print("Preparing ML training data...")
+    # Build dataset fingerprint for traceability
+    dataset_fingerprint = hashlib.md5(
+        clean_df["review_id"].sort_values().str.cat(sep=",").encode()
+    ).hexdigest()[:12]
+    
     ml_df = clean_df.drop_duplicates(subset=["clean_text"]).copy()
     
     X = ml_df["clean_text"]
@@ -82,16 +98,32 @@ def main():
     print("Evaluating ML model...")
     y_pred = pipeline.predict(X_test)
     y_prob = pipeline.predict_proba(X_test)[:, 1]
+    
+    # Baseline comparison
+    dummy = DummyClassifier(strategy="most_frequent")
+    dummy.fit(X_train, y_train)
+    y_dummy = dummy.predict(X_test)
 
+    report = classification_report(y_test, y_pred, output_dict=True)
+    
     ml_metadata = {
         "model_version": "1.0.0",
         "model_artifact": "low_star_classifier.pkl",
-        "positive_class": "1-2 stars",
-        "split_strategy": "Random split after dropping exact duplicate texts",
-        "ml_train_size": len(X_train),
-        "ml_test_size": len(X_test),
+        "positive_class": "1-2 stars (is_low_star=1)",
+        "evaluation_timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+        "dataset_fingerprint": dataset_fingerprint,
+        "split_strategy": "Random 80/20 split after removing duplicate normalized texts",
+        "sklearn_version": __import__('sklearn').__version__,
+        "ml_train_size": int(len(X_train)),
+        "ml_test_size": int(len(X_test)),
+        "train_low_star_count": int(y_train.sum()),
+        "test_low_star_count": int(y_test.sum()),
         "f1_macro": round(f1_score(y_test, y_pred, average="macro"), 3),
+        "f1_low_star": round(report.get("1", {}).get("f1-score", 0), 3),
+        "precision_low_star": round(report.get("1", {}).get("precision", 0), 3),
+        "recall_low_star": round(report.get("1", {}).get("recall", 0), 3),
         "roc_auc": round(roc_auc_score(y_test, y_prob), 3),
+        "baseline_f1_macro": round(f1_score(y_test, y_dummy, average="macro"), 3),
     }
     
     print("Saving artifacts...")

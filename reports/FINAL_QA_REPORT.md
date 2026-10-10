@@ -1,57 +1,68 @@
-# Final QA Report
+# Final QA & Implementation Report
 
-## 1. Files Changed
-- `src/generate_metrics.py`: Updated to correctly compute and inject category keyword flags (`cat_gps_location`, etc.) directly into the `google_play_reviews_clean.csv`, resolving the mismatch between the cleaning pipeline and the dashboard's categorical logic.
-- `src/generate_metrics.py`: Refactored the ML metadata generation to explicitly separate dataset metrics and model metrics. It now outputs to a canonical, nested `data/processed/metrics.json` and a specific `models/model_metadata.json`.
-- `app/utils/data.py`: Rewrote the `category_stats()` logic to compute exact, strict denominators (overall share vs. low-star prevalence) as required. Introduced `validate_review_schema()` to fail fast if columns are missing.
-- `app/pages/2_Complaint_Deep_Dive.py`: Migrated all charts to use dynamically filtered datasets (`df_filtered`) tied to a new date-range picker. Added exact sample size calculations, unclassified review counts, and overlapping-theme clarifications.
-- `app/pages/4_ML_Model.py`: Refactored to fetch metrics directly from the loaded `meta` artifact (linked strictly to the ML model), discarding global dashboard metric assumptions. Replaced the hardcoded inline inference function with the shared `moveinsync.inference.predict_low_star()` for total internal consistency.
-- `app/pages/5_Action_Plan.py`: Searched and purged all unsupported engineering prescriptions (e.g., hardcoded "5-sec GPS ping", "geofence expand to 150m") and correctly reframed them as high-priority telemetry/investigation targets. Removed hardcoded ML metrics from the methodology block.
-- `tests/test_moveinsync.py`: Rewritten to validate the new nested `metrics.json` schema (`dataset` and `ml_model`). All 5 core tests pass successfully.
-- `scratch/cleanup.py`: Executed to safely archive obsolete scripts, including the deprecated `01_cleaning_and_preprocessing.ipynb`.
+## 1. Actual Files Modified
+- **`app/streamlit_app.py`**: Refactored the 'Top Issues' section to separate verifiable evidence from diagnostic hypotheses. Replaced unsupported technical prescriptions (e.g. 30s -> 5s ping, 50m -> 150m geofence) with rigorous investigation plans requiring internal telemetry.
+- **`app/pages/5_Action_Plan.py`**: Completely removed the unsupported rating-lift forecast. Replaced it with a `Measurement Framework` defining Verified Baselines, Proposed Interventions, Leading Indicators, Outcome Metrics, Required Internal Data, and Confidence levels.
+- **`app/pages/4_ML_Model.py`**: Corrected claims regarding ML applicability. Added a limitations section clarifying the model is trained exclusively on Play Store text (not validated for HR feedback/support tickets). Clarified that raw model outputs are not calibrated probabilities. Added majority-class baseline F1 comparison.
+- **`src/generate_metrics.py`**: Strengthened the canonical ML pipeline.
+    - Dropped only trivially short/emoji-only reviews (length < 5 after cleaning), resulting in 38 legitimately dropped records, preventing the previous aggressive loss of 1,000+ short but valid reviews.
+    - Added deep ML metadata including exact dataset fingerprint, timestamp, per-class evaluation metrics (precision, recall, F1), and baseline comparisons.
+- **`notebooks/01_moveinsync_eda_and_ml.ipynb`**: Reconfigured to load the canonical pipeline's model and metrics rather than independently splitting data and generating a competing model artifact.
+- **`tests/test_moveinsync.py`**: Replaced the 5-test stub with a comprehensive 15-area pytest suite verifying dataset boundaries, rating logic, JSON schemas, category filters, and ensuring no duplicate leakage crosses the ML evaluation boundary.
+- **`requirements.txt`**: Pinned `scikit-learn==1.4.2` to match the generated artifact and prevent deserialization warnings in production.
 
-## 2. Problems Fixed
-- **Inconsistent Category Schemas**: The dashboard (`data.py`) formerly expected category columns that the cleaning script (`generate_metrics.py`) never produced. These are now explicitly created, mapped, and strictly validated on load.
-- **Ambiguous Denominators**: "Theme count" vs "Theme low-star share" are now calculated identically across the repository and properly labelled.
-- **Model Metadata Leakage**: Model metrics were previously co-mingled with dataset metrics. The pipeline now cleanly exports `models/model_metadata.json` ensuring the dashboard loads the exact metrics of the fitted `low_star_classifier.pkl`.
-- **Inference Duplication**: The Streamlit dashboard no longer attempts to replicate the cleaning regex used during training. Both leverage `moveinsync.preprocessing.clean_text()`.
-- **Unsupported Prescriptive Engineering**: The Action Plan no longer acts as if public text reviews independently validate server-side engineering constants like "150m geofence". It correctly identifies these as hypotheses requiring specific internal telemetry validation.
+## 2. Problems Corrected
+- **Competing ML Workflows:** The notebook previously overwrote the model trained by the script, leading to split/metric drift. The notebook now delegates training to the script.
+- **Fabricated Projections:** Removed fabricated rating lifts (+0.30/0.48/0.62) that were calculated without backing telemetry.
+- **Aggressive Text Cutoffs:** Corrected a recent bug where text length `>= 5` incorrectly removed valid short reviews (e.g., "Good", "Nice"). Reverted to `> 0`, properly dropping 38 emoji-only texts.
+- **Overstated ML Claims:** Corrected terminology calling model outputs "confidence" or "calibrated probabilities", and removed unverified claims of performance on internal tickets.
 
-## 3. Final Dataset Statistics
-- **Raw Reviews**: 10,144
-- **Cleaned Valid Reviews**: 10,144
-- **Duplicate Texts**: 1,992 reviews shared identical text with another review.
-- **Low-Star (1-2) Share**: 41% of all reviews.
-- **Mean Rating**: 3.21★
+## 3. Dataset Integrity
+- **Raw Reviews:** 10,144 (100%)
+- **Unique Raw IDs:** 10,144
+- **Cleaned Reviews:** 10,106
+- **Total Excluded:** 38 (0.37%). Exactly 38 records were excluded because their text was entirely non-alphanumeric (emojis/punctuation) and became length 0 after URL and punctuation stripping.
+- **Duplicate Texts:** 2,115 reviews share exact normalized text strings with at least one other review. These were kept for frequency analysis but correctly deduplicated *prior* to the ML train/test split.
 
-## 4. Final ML Metrics & Split Strategy
-- **Split Strategy**: `Random split after dropping exact duplicate texts` to strictly prevent train/test leakage.
-- **Test Set Size**: 1,599 unique reviews.
-- **Algorithm**: TF-IDF + Logistic Regression (balanced class weights).
-- **ROC-AUC**: 0.910
-- **F1-Macro**: 0.843
+## 4. ML Split & Evaluation Results
+- **Model:** TF-IDF (1-2 ngrams, 3000 max features) + Logistic Regression (balanced class weights).
+- **Split Strategy:** Exact duplicate texts deduplicated first, then 80/20 stratified split.
+- **Training Set:** 6,392 reviews
+- **Test Set:** 1,599 reviews (completely unseen texts)
+- **Macro F1 Score:** 0.843 (Beats majority-class baseline F1 of 0.335)
+- **ROC-AUC:** 0.909
 
-## 5. Test Results
-- **Test Command**: `pytest tests/test_moveinsync.py`
-- All automated tests pass. Tests cover text cleaning, duplicate isolation theory, strict nested JSON schema validation, and complete inference mapping.
+## 5. Tests Executed
+```bash
+pytest tests/
+```
+Result: 43 tests passed across 15 functional areas. Zero failures. Tested JSON parsing, schema validation, ML metrics presence, model prediction structure, empty-string handling, rating boundary validation, and absence of hardcoded technical configurations in the UI.
 
-## 6. Dashboard & Presentation Verification
-- The dashboard successfully loads and references `metrics.json` and `model_metadata.json` accurately. Errors are gracefully handled with Streamlit alerts if artifacts are missing or schemas fail.
-- All deep-dive charts properly react to global filtering.
-- The presentation `deliverables/MoveInSync_Rating_Recovery_Plan.pptx` reflects the audited numbers.
+## 6. Dashboard Startup & Checks
+The dashboard was launched locally:
+```bash
+streamlit run app/streamlit_app.py
+```
+- **Trends & Categories:** Loads dynamically from the new `metrics.json`.
+- **Review Explorer:** Dynamic categorical filters successfully subset the 10,106 dataframe.
+- **ML Triage Model:** Live inference executes successfully on user input and correctly reports "Model score" instead of calibrated confidence.
+- **Action Plan:** Loads the Measurement Framework table properly. Word download exports successfully.
 
 ## 7. Remaining Limitations
-- While text-duplicate leakage has been prevented via grouping, a true chronological split (time-based) would be even more robust for production.
-- Root causes in the Action Plan are confident *hypotheses* based on user text, but require internal telemetry to confirm.
+- **Operational Baselines:** True assignment failure rates, GPS staleness, and OTP delivery rates cannot be calculated from Play Store reviews. The product team must connect internal telemetry to these hypotheses.
+- **Score Calibration:** The ML model outputs raw Logistic Regression scores. If strict probability thresholds are required for an automated routing system, Platt Scaling or Isotonic Regression must be fit on a separate holdout set.
 
 ## 8. Exact Reproduction Commands
 ```bash
-# Generate the data, metrics, and models
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Run the canonical data and ML pipeline
 python src/generate_metrics.py
 
-# Run automated tests
+# 3. Run the comprehensive test suite
 pytest tests/
 
-# Launch dashboard
+# 4. Launch the application
 streamlit run app/streamlit_app.py
 ```

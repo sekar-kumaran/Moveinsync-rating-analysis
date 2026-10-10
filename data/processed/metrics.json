@@ -2,6 +2,10 @@
     "dataset": {
         "raw_reviews": 10144,
         "unique_review_ids": 10144,
+        "excluded_duplicate_ids": 0,
+        "excluded_null_text_or_rating": 0,
+        "excluded_too_short_text": 38,
+        "total_excluded": 38,
         "clean_reviews": 10106,
         "cat_gps_location_total": 1415,
         "cat_gps_location_low_star": 810,
@@ -23,11 +27,20 @@
     "ml_model": {
         "model_version": "1.0.0",
         "model_artifact": "low_star_classifier.pkl",
-        "positive_class": "1-2 stars",
-        "split_strategy": "Random split after dropping exact duplicate texts",
+        "positive_class": "1-2 stars (is_low_star=1)",
+        "evaluation_timestamp": "2026-10-10T15:29:10.127361Z",
+        "dataset_fingerprint": "9e1485f8fe40",
+        "split_strategy": "Random 80/20 split after removing duplicate normalized texts",
+        "sklearn_version": "1.4.2",
         "ml_train_size": 6392,
         "ml_test_size": 1599,
+        "train_low_star_count": 3225,
+        "test_low_star_count": 807,
         "f1_macro": 0.843,
-        "roc_auc": 0.909
+        "f1_low_star": 0.85,
+        "precision_low_star": 0.823,
+        "recall_low_star": 0.879,
+        "roc_auc": 0.909,
+        "baseline_f1_macro": 0.335
     }
 }

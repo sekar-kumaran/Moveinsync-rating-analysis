@@ -63,14 +63,11 @@ pip install -r requirements.txt
 # Run the reproducible data pipeline & metrics generation
 python src/generate_metrics.py
 
+# Run the test suite
+pytest tests/
+
 # Launch the dashboard
 streamlit run app/streamlit_app.py
-```
-
-Or using Make (Linux/Mac):
-```bash
-make install
-make dashboard
 ```
 
 ---

@@ -123,24 +123,52 @@ section("!", "Top Issues Driving 1-Star Reviews",
         "Root-cause categories ranked by frequency in low-star feedback")
 
 findings = [
-    ("badge-p1","P1 -- Critical","Crashes, Blank Screen & OTP Failures","p1",
-     "The biggest driver of 1-star reviews. Users can't open the app or complete login -- OTP doesn't arrive, the splash screen freezes, or the app hits an ANR.",
-     "Deploy Crashlytics now. Fix top 3 ANR paths. Add SMS/WhatsApp OTP fallback. Target: >99.5% crash-free sessions."),
-    ("badge-p1","P1 -- Critical","GPS & Live Location Stale or Wrong","p1",
-     "Users see the driver shown 2 km away while he's at the gate. Every missed pickup generates a 1-star review immediately.",
-     "Reduce driver ping from 30s -> 5s. Add 'Location updating...' indicator. Use client-side dead-reckoning between pings."),
-    ("badge-p2","P2 -- High","Silent Notifications -- Cab Arrives Unannounced","p2",
-     "Android Doze and OEM battery savers silently kill push delivery. No SMS fallback = no safety net. Employee misses cab, writes 1-star.",
-     "Add SMS fallback for 'Cab Arrived'. Use FCM high-priority channel. Test on top 5 OEM battery-saver configs."),
-    ("badge-p2","P2 -- High","No Driver Assigned After Booking Confirmed","p2",
-     "Booking shows success, then infinite 'no driver available' limbo with zero communication or ETA.",
-     "Show live assignment state in UI. Auto re-dispatch if no driver 20 min before shift + push notification."),
-    ("badge-p3","P3 -- Medium","No-Show Disputes with No In-App Resolution","p3",
-     "Employees marked absent at the gate. Geofence is too tight. No way to dispute inside the app.",
-     "Expand geofence 50m->150m. Require 2 min in zone before marking absent. Add in-app 'Dispute' button."),
-    ("badge-p3","P3 -- Medium","Support Is a Dead End","p3",
-     "Multiple reviews say tickets go unresolved. One bad trip becomes a permanent 1-star with no repair path.",
-     "Integrate Freshdesk/Zendesk in-app. Show ticket status. Reply every 1-star Play Store review within 24h."),
+    ("badge-p1","P1 — Critical","Crashes, Blank Screen & OTP Failures","p1",
+     "<b>Evidence:</b> 'crash', 'login', 'OTP' appear in 1,017 reviews (~10% of all). 78% of those are 1–2★. "
+     "Review text is unambiguous: 'app keeps stopping', 'OTP never arrives', 'blank screen on launch'.<br><br>"
+     "<b>Hypothesis:</b> Top ANR paths and OTP delivery failures are likely culprits, but the specific stack traces and "
+     "OTP delivery rates require Crashlytics and telemetry to confirm.<br><br>"
+     "<b>Next action:</b> Deploy Crashlytics; obtain crash rate and top ANR reports. "
+     "Investigate OTP delivery rates — if below threshold, evaluate fallback channels.",
+     "Metric: Crash-free session rate | Data needed: Crashlytics, OTP delivery logs"),
+    ("badge-p1","P1 — Critical","GPS & Live Location Stale or Wrong","p1",
+     "<b>Evidence:</b> 'GPS', 'location', 'tracking' appear in 1,415 reviews (~14%). 57% are 1–2★. "
+     "Users report driver shown far away while he is physically present, or tracking freezing mid-trip.<br><br>"
+     "<b>Hypothesis:</b> Location may be stale due to infrequent driver-app pings or OS battery restrictions "
+     "killing the background location service. Root cause requires driver-app telemetry — cannot be determined from public reviews alone.<br><br>"
+     "<b>Next action:</b> Pull driver-app GPS log timestamps; measure median location staleness. "
+     "If pings are infrequent, test increased frequency on a pilot cohort and compare OEM (Xiaomi, Oppo) behavior.",
+     "Metric: Median location staleness (sec) | Data needed: Driver-app telemetry (internal)"),
+    ("badge-p2","P2 — High","Silent Notifications — Cab Arrives Unannounced","p2",
+     "<b>Evidence:</b> Reviews mention 'no notification', 'missed cab', 'no alert'. Concentrated in 2023–2024 reviews coinciding with stricter Android battery restrictions.<br><br>"
+     "<b>Hypothesis:</b> Android Doze mode and OEM battery savers are suppressing push notifications. "
+     "Without SMS fallback, employees receive no alert. Cause may be FCM priority configuration.<br><br>"
+     "<b>Next action:</b> Audit FCM message priority settings. Test notification delivery on top 5 OEM battery-saver configurations. "
+     "Evaluate SMS fallback for 'Cab Arrived' event only.",
+     "Metric: Notification delivery rate | Data needed: FCM delivery receipts (internal)"),
+    ("badge-p2","P2 — High","No Driver Assigned After Booking Confirmed","p2",
+     "<b>Evidence:</b> 'no driver', 'driver cancelled', 'no cab assigned' are frequent 1★ themes. "
+     "Users report booking confirmed but entering silent waiting with no communication or ETA.<br><br>"
+     "<b>Hypothesis:</b> Assignment failure handling does not communicate state to the user. "
+     "Exact root cause (driver pool shortage vs. assignment logic) requires internal booking data.<br><br>"
+     "<b>Next action:</b> Surface real-time assignment state in the user-facing UI. "
+     "Investigate auto re-dispatch trigger timing. Measure booking → driver-confirmed rate.",
+     "Metric: Booking → driver-confirmed rate | Data needed: Booking system logs (internal)"),
+    ("badge-p3","P3 — Medium","No-Show Disputes with No In-App Resolution","p3",
+     "<b>Evidence:</b> 'no show', 'marked absent' appear in 132 reviews. 75% are 1–2★. "
+     "Employees say they were present at pickup but still marked absent.<br><br>"
+     "<b>Hypothesis:</b> Geofence may be too tight for urban pickup scenarios, or driver-side GPS is inaccurate at the moment of check-in. "
+     "The exact current geofence radius and hit-rate data are not available from public reviews.<br><br>"
+     "<b>Next action:</b> Obtain geofence check logs and analyze hit-rate vs. actual GPS positions at pickup time. "
+     "If systematic mismatch is found, consider adjusting radius or requiring driver to be in zone for a minimum duration.",
+     "Metric: No-show disputes per 1,000 trips | Data needed: Geofence check logs, GPS at pickup (internal)"),
+    ("badge-p3","P3 — Medium","Support Is a Dead End","p3",
+     "<b>Evidence:</b> Multiple reviews say submitted tickets go unresolved. "
+     "Developer response rate in the collected dataset is low. One unresolved bad trip often becomes a permanent 1★.<br><br>"
+     "<b>Hypothesis:</b> No in-app support channel forces users to external channels (email), reducing resolution rates.<br><br>"
+     "<b>Next action:</b> Reply to every 1★ Play Store review within 24 hours. "
+     "Evaluate embedding a lightweight in-app ticket flow (Freshdesk/Zendesk) for trip-specific disputes.",
+     "Metric: % of 1★ reviews with developer reply | Data needed: Play Store Developer Console"),
 ]
 
 col_a, col_b = st.columns(2)

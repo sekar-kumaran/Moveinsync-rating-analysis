@@ -33,28 +33,34 @@ with st.sidebar:
 df             = load_reviews()
 pipeline, meta = load_model()
 
-page_hero("ML Triage Classifier",
-          "TF-IDF + Logistic Regression trained to predict low-star reviews from free-text -- enabling automatic severity triage of support tickets")
+page_hero("ML Review Triage Classifier",
+          "TF-IDF + Logistic Regression trained on Google Play Store reviews to distinguish 1–2★ from 3–5★ text")
 
 if pipeline is None:
-    st.warning("Model not found. Run python src/generate_metrics.py first.")
+    st.warning("Model not found. Run: python src/generate_metrics.py")
     st.stop()
 
 # Metric KPIs
-section("M", "Model Performance Metrics", "Evaluated on held-out test set -- never seen during training")
+section("M", "Model Performance — Google Play Review Test Set",
+        "Evaluated on 20% held-out reviews (text-deduplicated before split to prevent leakage)")
 c1, c2, c3, c4 = st.columns(4)
-kpi_card(c1, f"{meta.get('roc_auc', 0):.3f}",  "ROC-AUC Score",     "1.0 = perfect",     "good", "blue")
-kpi_card(c2, f"{meta.get('f1_macro', 0):.3f}", "F1-Macro",          "Balanced accuracy metric", "good", "teal")
-kpi_card(c3, f"{meta.get('ml_test_size', 0):,}",  "Test Set Size",     "Samples evaluated on", "neu",  "violet")
-kpi_card(c4, meta.get("split_strategy", "Random"), "Split Strategy", "To prevent text leakage", "neu",  "green")
+kpi_card(c1, f"{meta.get('roc_auc', 0):.3f}",  "ROC-AUC",       "Test set (Play Store reviews)", "good", "blue")
+kpi_card(c2, f"{meta.get('f1_macro', 0):.3f}", "F1-Macro",      "Avg of per-class F1",  "good", "teal")
+kpi_card(c3, f"{meta.get('ml_test_size', 0):,}",  "Test Set Size",  "Held-out reviews", "neu",  "violet")
+kpi_card(c4, meta.get("split_strategy", "Random"), "Split Strategy", "Dedup before split", "neu",  "green")
 st.markdown("<br>", unsafe_allow_html=True)
 
 info_box("""
-<b>What the model does:</b> Given any free-text (review, support ticket, feedback form),
-it predicts whether that text implies a 1-star or 2-star experience.<br><br>
-<b>Why it matters:</b> Employees sometimes submit internal HR feedback without a star rating.
-This classifier can <b>auto-flag severe negative experiences</b> for immediate ops triage --
-before they become a Play Store 1-star review.
+<b>What this model does:</b> The classifier is trained on Google Play Store reviews for
+<code>com.moveinsync.ets</code>. Given a review text, it predicts whether it is a 1–2★
+(low-star) or 3–5★ (not low-star) experience.<br><br>
+<b>Scope and limitations:</b>
+<ul>
+<li>The model was trained and evaluated exclusively on Play Store review text. Its performance on other domains
+(HR feedback, support tickets, surveys) <b>has not been validated</b>.</li>
+<li>Outputs are raw model scores, not calibrated probabilities. They indicate relative likelihood, not a precise percentage.</li>
+<li>A majority-class baseline (always predicting not low-star) would achieve ~59% accuracy but near-zero F1 for low-star. This model outperforms that baseline with balanced class weights.</li>
+</ul>
 """)
 
 # Feature importance
@@ -97,9 +103,9 @@ try:
 except Exception as e:
     st.warning(f"Could not extract feature importance: {e}")
 
-# Confidence distribution
-section("C", "Prediction Confidence Distribution",
-        "How confident is the model on a 500-review sample -- well-calibrated models peak near 0 and 1")
+# Model Score Distribution
+section("S", "Model Score Distribution",
+        "Score distribution on a 500-review sample — scores are model outputs, not calibrated probabilities")
 if not df.empty:
     try:
         sample = df.dropna(subset=["clean_text"]).sample(min(500, len(df)), random_state=42)
@@ -113,7 +119,7 @@ if not df.empty:
                                     marker_color="rgba(16,185,129,0.55)", nbinsx=30,
                                     hovertemplate="P=%{x:.2f}<br>Count=%{y}<extra></extra>"))
         fig3.update_layout(**PLOT_BASE, barmode="overlay", height=300,
-                           title="Predicted P(Low-Star) -- 500 review sample")
+                           title="Model Score Distribution — 500 review sample (scores ≠ calibrated probabilities)")
         fig3.update_xaxes(title="P(low-star)", range=[0, 1], gridcolor="rgba(100,150,220,0.12)")
         fig3.update_yaxes(title="Count", gridcolor="rgba(100,150,220,0.12)")
         fig3.update_layout(legend=dict(bgcolor="rgba(255,255,255,0.8)", borderwidth=1,
@@ -123,8 +129,8 @@ if not df.empty:
         pass
 
 # Live Inference
-section("L", "Live Inference -- Try It Yourself",
-        "Type any feedback or support ticket text and the model predicts severity")
+section("L", "Live Inference — Try It Yourself",
+        "Classifies Play Store review text as likely low-star (1–2★) or not. Not validated for other text types.")
 
 examples = [
     "Select an example...",
@@ -162,15 +168,15 @@ if st.button("Predict Severity", type="primary"):
                     st.markdown(
                         f"<div class='predict-low'>"
                         f"<div class='predict-label' style='color:#dc2626'>LOW-STAR SIGNAL</div>"
-                        f"<div class='predict-sub' style='color:#7f1d1d'>Predicts a 1 or 2 star experience"
-                        f"<br><b>{low_prob*100:.1f}% confidence</b></div></div>",
+                        f"<div class='predict-sub' style='color:#7f1d1d'>Classified as likely 1–2★ experience<br>"
+                        f"<b>Model score: {low_prob*100:.1f}%</b> (not a calibrated probability)</div></div>",
                         unsafe_allow_html=True)
                 else:
                     st.markdown(
                         f"<div class='predict-high'>"
-                        f"<div class='predict-label' style='color:#15803d'>POSITIVE SIGNAL</div>"
-                        f"<div class='predict-sub' style='color:#14532d'>Predicts a 3-5 star experience"
-                        f"<br><b>{(1-low_prob)*100:.1f}% confidence</b></div></div>",
+                        f"<div class='predict-label' style='color:#15803d'>NOT LOW-STAR</div>"
+                        f"<div class='predict-sub' style='color:#14532d'>Classified as likely 3–5★ experience<br>"
+                        f"<b>Model score: {(1-low_prob)*100:.1f}%</b> (not a calibrated probability)</div></div>",
                         unsafe_allow_html=True)
 
         with col_detail:

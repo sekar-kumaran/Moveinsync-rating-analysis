@@ -67,42 +67,109 @@ fig.add_annotation(x=7.5, y=10.5, text="Strategic",  font=dict(color="#2563eb", 
 apply_legend(fig)
 st.plotly_chart(fig, use_container_width=True)
 
-# 2. Rating trajectory
-section("02", "Expected Rating Trajectory After Each Fix Wave",
-        "Conservative estimate -- assumes 30% of low-star reviews in each category convert to neutral/positive")
-lift_labels = ["Now", "Wk 1\nCrashes+GPS", "Wk 2\n+Notifications", "Wk 3\n+Assignment", "Wk 4\nFull 30d"]
-lift_vals   = [mean_rating,
-               min(mean_rating + 0.30, 5.0),
-               min(mean_rating + 0.48, 5.0),
-               min(mean_rating + 0.62, 5.0),
-               min(mean_rating + 0.80, 5.0)]
-marker_colors = ["#ef4444", "#f97316", "#f59e0b", "#22c55e", "#10b981"]
 
-fig2 = go.Figure()
-fig2.add_trace(go.Scatter(
-    x=lift_labels, y=lift_vals, mode="lines+markers+text",
-    line=dict(color="#2563eb", width=3),
-    marker=dict(size=12, color=marker_colors, line=dict(width=2, color="white")),
-    text=[f"{v:.2f}" for v in lift_vals],
-    textposition="top center",
-    textfont=dict(color="#1e3a5f", size=12, family="Inter"),
-    hovertemplate="%{x}<br><b>%{y:.2f}</b><extra></extra>"))
-fig2.add_hrect(y0=4.0, y1=5.0, fillcolor="rgba(16,185,129,0.06)",
-               line_width=0, annotation_text="Target zone >= 4.0",
-               annotation_position="top right",
-               annotation_font=dict(color="#059669", size=11))
-fig2.add_hline(y=4.0, line_dash="dash", line_color="#10b981",
-               annotation_text="4.0 target", annotation_font=dict(color="#059669"))
-fig2.update_layout(**PLOT_BASE, height=320, title="Conservative Rating Lift Forecast")
-fig2.update_yaxes(range=[1.0, 5.2], title="Mean Rating", gridcolor="rgba(100,150,220,0.12)")
-fig2.update_xaxes(gridcolor="rgba(0,0,0,0)")
-st.plotly_chart(fig2, use_container_width=True)
+# 2. Measurement Framework (replaces fabricated rating forecast)
+section("02", "Measurement Framework",
+        "Verified baselines, proposed interventions, and how to measure success — not rating-lift forecasts")
+
+import json as _json
+_metrics_path = Path("data/processed/metrics.json")
+if _metrics_path.exists():
+    with open(_metrics_path) as _f:
+        _m = _json.load(_f)
+    _ds = _m.get("dataset", {})
+    _baseline_rating = _ds.get("mean_rating", "N/A")
+    _low_star_pct    = round(_ds.get("low_star_share", 0) * 100, 1)
+    _crash_pct       = round(_ds.get("cat_crashes_login_low_star", 0) / max(_ds.get("cat_crashes_login_total", 1), 1) * 100, 1)
+    _gps_pct         = round(_ds.get("cat_gps_location_low_star", 0) / max(_ds.get("cat_gps_location_total", 1), 1) * 100, 1)
+else:
+    _baseline_rating = "N/A"
+    _low_star_pct    = "N/A"
+    _crash_pct       = "N/A"
+    _gps_pct         = "N/A"
+
+_framework = pd.DataFrame([
+    dict(
+        Area="App Stability (Crashes/OTP)",
+        Baseline=f"{_crash_pct}% of crash/login reviews are 1-2★ (public review signal)",
+        Intervention="Integrate Crashlytics; investigate OTP fallback channels",
+        Owner="Mobile Eng",
+        Leading_Indicator="Crash-free session rate (Crashlytics)",
+        Outcome_Metric="% of crash/login reviews that are 1-2★",
+        Period="30 days post-fix",
+        Required_Data="Crashlytics, OTP delivery rate logs",
+        Confidence="HIGH — symptom is unambiguous in review text; root cause needs telemetry",
+    ),
+    dict(
+        Area="GPS / Live Location",
+        Baseline=f"{_gps_pct}% of GPS-mention reviews are 1-2★ (public review signal)",
+        Intervention="Audit driver-app location ping interval; investigate foreground service on strict OEMs",
+        Owner="Backend + Mobile",
+        Leading_Indicator="Median location staleness (driver-app telemetry)",
+        Outcome_Metric="% of GPS-mention reviews that are 1-2★",
+        Period="30 days post-fix",
+        Required_Data="Driver-app GPS telemetry logs (internal — requires access)",
+        Confidence="MEDIUM — symptom confirmed from reviews; cause (app vs OS) unconfirmed",
+    ),
+    dict(
+        Area="Vehicle Assignment & Notifications",
+        Baseline="Requires internal booking data (public reviews confirm the symptom)",
+        Intervention="Surface real-time assignment status; test fallback push/SMS on assignment failure",
+        Owner="Backend + Ops",
+        Leading_Indicator="Booking → driver-confirmed rate",
+        Outcome_Metric="% of 'no driver' low-star reviews relative to total bookings",
+        Period="30 days post-fix",
+        Required_Data="Booking completion logs, push delivery receipts (internal)",
+        Confidence="HIGH — users are explicit; solution design needs internal data",
+    ),
+    dict(
+        Area="No-Show Disputes",
+        Baseline="Requires geofence hit-rate data (internal — not in public reviews)",
+        Intervention="Analyze geofence hit rates; consider increasing radius conditionally; add in-app dispute flow",
+        Owner="Product + Backend",
+        Leading_Indicator="Dispute resolution time (hours)",
+        Outcome_Metric="# no-show disputes per 1,000 trips",
+        Period="60 days post-change",
+        Required_Data="Geofence check logs, GPS track at pickup time (internal)",
+        Confidence="MEDIUM — review text confirms frustration; GPS data needed to validate fix",
+    ),
+    dict(
+        Area="Developer Review Response",
+        Baseline=f"Response rate: {df['developer_reply'].notna().mean()*100:.1f}% (public Play Store data)",
+        Intervention="Reply to all 1★ reviews within 24h; create templated response library",
+        Owner="Ops / Customer Success",
+        Leading_Indicator="Response rate to 1-2★ reviews",
+        Outcome_Metric="% of 1★ reviews with developer reply",
+        Period="Ongoing",
+        Required_Data="Play Store Developer Console",
+        Confidence="HIGH — fully actionable with existing access",
+    ),
+])
+
+st.dataframe(
+    _framework.rename(columns={
+        "Area": "Focus Area",
+        "Baseline": "Verified Baseline",
+        "Intervention": "Proposed Intervention",
+        "Owner": "Owner",
+        "Leading_Indicator": "Leading Indicator",
+        "Outcome_Metric": "Outcome Metric",
+        "Period": "Measurement Period",
+        "Required_Data": "Required Data/Access",
+        "Confidence": "Confidence & Limitations",
+    }),
+    use_container_width=True,
+    hide_index=True,
+)
 
 info_box("""
-<b>Assumptions:</b> (1) Each fix resolves ~30% of its category low-star reviews.
-(2) Fixed users update rating or don't re-review. (3) New review velocity constant.
-(4) No regressions introduced. <i>Real lift may differ based on execution quality.</i>
+<b>Note on rating forecasts:</b> This analysis does not provide rating-lift predictions.
+Public Play Store reviews confirm user symptoms but do not contain the operational telemetry
+(GPS logs, OTP delivery rates, booking completion data) needed to compute reliable improvement estimates.
+Targets should be set by the product team using internal baselines once instrumentation is in place.
 """)
+
+
 
 # 3. Sprint plan
 section("03", "30-Day Sprint Plan",
