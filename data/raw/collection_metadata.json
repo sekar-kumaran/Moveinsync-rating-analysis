@@ -1,0 +1,20 @@
+{
+  "app_id": "com.moveinsync.ets",
+  "source_platform": "google_play",
+  "collection_method": "google-play-scraper (Python)",
+  "language": "en",
+  "country": "in",
+  "records_added_this_run": 10144,
+  "total_records_in_file": 10144,
+  "last_collection_timestamp": "2026-10-10T07:46:23.281886+00:00",
+  "output_file": "D:\\moviensnyc\\moveinsync-fde-case-study\\data\\raw\\google_play_reviews.csv",
+  "errors_this_run": [],
+  "notes": "google-play-scraper retrieves only publicly visible reviews. The platform does not expose a complete historical dataset. Actual Play Store review count may be higher than collected.",
+  "run_history": [
+    {
+      "timestamp": "2026-10-10T07:46:23.281886+00:00",
+      "records_added": 10144,
+      "total_records": 10144
+    }
+  ]
+}

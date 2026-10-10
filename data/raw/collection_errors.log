@@ -1,0 +1,74 @@
+2026-10-10 13:14:01,258 [INFO] ============================================================
+2026-10-10 13:14:01,258 [INFO] MoveInSync Review Collector
+2026-10-10 13:14:01,260 [INFO] App ID: com.moveinsync.ets | Lang: en | Country: in
+2026-10-10 13:14:01,260 [INFO] Output: D:\moviensnyc\moveinsync-fde-case-study\data\raw\google_play_reviews.csv
+2026-10-10 13:14:01,260 [INFO] ============================================================
+2026-10-10 13:14:01,261 [INFO] Loaded 0 existing review IDs.
+2026-10-10 13:14:01,261 [INFO] Starting collection: sort=NEWEST, lang=en, country=in, target=5000
+2026-10-10 13:14:01,620 [INFO] Batch 1: fetched=200, new=200, total_new=200
+2026-10-10 13:14:03,905 [INFO] Batch 2: fetched=200, new=200, total_new=400
+2026-10-10 13:14:06,454 [INFO] Batch 3: fetched=200, new=200, total_new=600
+2026-10-10 13:14:08,798 [INFO] Batch 4: fetched=200, new=200, total_new=800
+2026-10-10 13:14:11,105 [INFO] Batch 5: fetched=200, new=200, total_new=1000
+2026-10-10 13:14:13,424 [INFO] Batch 6: fetched=200, new=200, total_new=1200
+2026-10-10 13:14:15,732 [INFO] Batch 7: fetched=200, new=200, total_new=1400
+2026-10-10 13:14:18,038 [INFO] Batch 8: fetched=200, new=200, total_new=1600
+2026-10-10 13:14:22,522 [INFO] Batch 9: fetched=200, new=200, total_new=1800
+2026-10-10 13:14:24,856 [INFO] Batch 10: fetched=200, new=200, total_new=2000
+2026-10-10 13:14:27,400 [INFO] Batch 11: fetched=200, new=200, total_new=2200
+2026-10-10 13:14:29,872 [INFO] Batch 12: fetched=200, new=200, total_new=2400
+2026-10-10 13:14:33,892 [INFO] Batch 13: fetched=200, new=200, total_new=2600
+2026-10-10 13:14:36,488 [INFO] Batch 14: fetched=200, new=200, total_new=2800
+2026-10-10 13:14:38,855 [INFO] Batch 15: fetched=200, new=200, total_new=3000
+2026-10-10 13:14:41,259 [INFO] Batch 16: fetched=200, new=200, total_new=3200
+2026-10-10 13:14:43,921 [INFO] Batch 17: fetched=200, new=200, total_new=3400
+2026-10-10 13:14:46,525 [INFO] Batch 18: fetched=200, new=200, total_new=3600
+2026-10-10 13:14:48,844 [INFO] Batch 19: fetched=200, new=200, total_new=3800
+2026-10-10 13:14:51,221 [INFO] Batch 20: fetched=200, new=200, total_new=4000
+2026-10-10 13:14:54,055 [INFO] Batch 21: fetched=200, new=200, total_new=4200
+2026-10-10 13:14:56,372 [INFO] Batch 22: fetched=200, new=200, total_new=4400
+2026-10-10 13:14:58,969 [INFO] Batch 23: fetched=200, new=200, total_new=4600
+2026-10-10 13:15:01,339 [INFO] Batch 24: fetched=200, new=200, total_new=4800
+2026-10-10 13:15:03,708 [INFO] Batch 25: fetched=200, new=200, total_new=5000
+2026-10-10 13:15:03,709 [INFO] Reached target count 5000.
+2026-10-10 13:15:03,780 [INFO] Saved 5000 new records to D:\moviensnyc\moveinsync-fde-case-study\data\raw\google_play_reviews.csv
+2026-10-10 13:15:03,780 [INFO] Starting collection: sort=MOST_RELEVANT, lang=en, country=in, target=5000
+2026-10-10 13:15:04,106 [INFO] Batch 1: fetched=200, new=30, total_new=30
+2026-10-10 13:15:06,523 [INFO] Batch 2: fetched=200, new=113, total_new=143
+2026-10-10 13:15:09,118 [INFO] Batch 3: fetched=200, new=142, total_new=285
+2026-10-10 13:15:11,469 [INFO] Batch 4: fetched=200, new=93, total_new=378
+2026-10-10 13:15:14,223 [INFO] Batch 5: fetched=200, new=153, total_new=531
+2026-10-10 13:15:16,639 [INFO] Batch 6: fetched=200, new=139, total_new=670
+2026-10-10 13:15:19,056 [INFO] Batch 7: fetched=200, new=156, total_new=826
+2026-10-10 13:15:21,623 [INFO] Batch 8: fetched=200, new=191, total_new=1017
+2026-10-10 13:15:24,039 [INFO] Batch 9: fetched=200, new=193, total_new=1210
+2026-10-10 13:15:26,406 [INFO] Batch 10: fetched=200, new=177, total_new=1387
+2026-10-10 13:15:28,815 [INFO] Batch 11: fetched=200, new=167, total_new=1554
+2026-10-10 13:15:31,202 [INFO] Batch 12: fetched=200, new=151, total_new=1705
+2026-10-10 13:15:33,640 [INFO] Batch 13: fetched=200, new=103, total_new=1808
+2026-10-10 13:15:36,118 [INFO] Batch 14: fetched=200, new=167, total_new=1975
+2026-10-10 13:15:38,506 [INFO] Batch 15: fetched=200, new=167, total_new=2142
+2026-10-10 13:15:41,032 [INFO] Batch 16: fetched=200, new=184, total_new=2326
+2026-10-10 13:15:43,456 [INFO] Batch 17: fetched=200, new=153, total_new=2479
+2026-10-10 13:15:45,806 [INFO] Batch 18: fetched=200, new=147, total_new=2626
+2026-10-10 13:15:48,173 [INFO] Batch 19: fetched=200, new=200, total_new=2826
+2026-10-10 13:15:50,540 [INFO] Batch 20: fetched=200, new=183, total_new=3009
+2026-10-10 13:15:52,961 [INFO] Batch 21: fetched=200, new=195, total_new=3204
+2026-10-10 13:15:55,396 [INFO] Batch 22: fetched=200, new=188, total_new=3392
+2026-10-10 13:15:58,081 [INFO] Batch 23: fetched=200, new=153, total_new=3545
+2026-10-10 13:16:00,557 [INFO] Batch 24: fetched=200, new=156, total_new=3701
+2026-10-10 13:16:03,057 [INFO] Batch 25: fetched=200, new=169, total_new=3870
+2026-10-10 13:16:05,474 [INFO] Batch 26: fetched=200, new=157, total_new=4027
+2026-10-10 13:16:07,890 [INFO] Batch 27: fetched=200, new=162, total_new=4189
+2026-10-10 13:16:10,324 [INFO] Batch 28: fetched=200, new=124, total_new=4313
+2026-10-10 13:16:12,719 [INFO] Batch 29: fetched=200, new=156, total_new=4469
+2026-10-10 13:16:15,152 [INFO] Batch 30: fetched=200, new=153, total_new=4622
+2026-10-10 13:16:18,037 [INFO] Batch 31: fetched=200, new=164, total_new=4786
+2026-10-10 13:16:20,424 [INFO] Batch 32: fetched=200, new=160, total_new=4946
+2026-10-10 13:16:23,026 [INFO] Batch 33: fetched=200, new=198, total_new=5144
+2026-10-10 13:16:23,026 [INFO] Reached target count 5000.
+2026-10-10 13:16:23,153 [INFO] Saved 5144 new records to D:\moviensnyc\moveinsync-fde-case-study\data\raw\google_play_reviews.csv
+2026-10-10 13:16:23,281 [INFO] Metadata written to D:\moviensnyc\moveinsync-fde-case-study\data\raw\collection_metadata.json
+2026-10-10 13:16:23,281 [INFO] ============================================================
+2026-10-10 13:16:23,281 [INFO] Collection complete. Added: 10144 | Total in file: 10144
+2026-10-10 13:16:23,286 [INFO] ============================================================

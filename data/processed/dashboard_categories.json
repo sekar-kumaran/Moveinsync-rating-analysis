@@ -1,0 +1,170 @@
+[
+  {
+    "key": "positive_feedback",
+    "label": "Positive Feedback",
+    "total": 4002,
+    "by_rating": {
+      "1": 234,
+      "2": 68,
+      "3": 117,
+      "4": 573,
+      "5": 3010
+    }
+  },
+  {
+    "key": "other",
+    "label": "Other / Ambiguous",
+    "total": 2618,
+    "by_rating": {
+      "1": 1127,
+      "2": 146,
+      "3": 129,
+      "4": 185,
+      "5": 1031
+    }
+  },
+  {
+    "key": "vehicle_assignment",
+    "label": "Vehicle Assignment",
+    "total": 1519,
+    "by_rating": {
+      "1": 692,
+      "2": 145,
+      "3": 130,
+      "4": 196,
+      "5": 356
+    }
+  },
+  {
+    "key": "gps_location_accuracy",
+    "label": "GPS / Location Accuracy",
+    "total": 1295,
+    "by_rating": {
+      "1": 584,
+      "2": 129,
+      "3": 132,
+      "4": 194,
+      "5": 256
+    }
+  },
+  {
+    "key": "driver_communication",
+    "label": "Driver Communication",
+    "total": 1151,
+    "by_rating": {
+      "1": 646,
+      "2": 113,
+      "3": 104,
+      "4": 131,
+      "5": 157
+    }
+  },
+  {
+    "key": "booking_date_selection",
+    "label": "Booking & Date Selection",
+    "total": 923,
+    "by_rating": {
+      "1": 441,
+      "2": 113,
+      "3": 68,
+      "4": 100,
+      "5": 201
+    }
+  },
+  {
+    "key": "crash_performance_login",
+    "label": "Crash / Performance / Login",
+    "total": 921,
+    "by_rating": {
+      "1": 593,
+      "2": 123,
+      "3": 69,
+      "4": 69,
+      "5": 67
+    }
+  },
+  {
+    "key": "eta_pickup_time",
+    "label": "ETA & Pickup Time",
+    "total": 492,
+    "by_rating": {
+      "1": 276,
+      "2": 43,
+      "3": 35,
+      "4": 48,
+      "5": 90
+    }
+  },
+  {
+    "key": "support_resolution",
+    "label": "Support & Resolution",
+    "total": 414,
+    "by_rating": {
+      "1": 265,
+      "2": 28,
+      "3": 28,
+      "4": 25,
+      "5": 68
+    }
+  },
+  {
+    "key": "cancellation_modification",
+    "label": "Cancellation & Modification",
+    "total": 314,
+    "by_rating": {
+      "1": 178,
+      "2": 32,
+      "3": 31,
+      "4": 30,
+      "5": 43
+    }
+  },
+  {
+    "key": "trip_confirmation_state",
+    "label": "Trip Confirmation / State",
+    "total": 281,
+    "by_rating": {
+      "1": 187,
+      "2": 35,
+      "3": 31,
+      "4": 16,
+      "5": 12
+    }
+  },
+  {
+    "key": "push_notifications",
+    "label": "Push Notifications",
+    "total": 245,
+    "by_rating": {
+      "1": 120,
+      "2": 23,
+      "3": 29,
+      "4": 37,
+      "5": 36
+    }
+  },
+  {
+    "key": "safety_sos",
+    "label": "Safety & SOS",
+    "total": 140,
+    "by_rating": {
+      "1": 47,
+      "2": 8,
+      "3": 5,
+      "4": 8,
+      "5": 72
+    }
+  },
+  {
+    "key": "checkin_noshow",
+    "label": "Check-in / No-show",
+    "total": 129,
+    "by_rating": {
+      "1": 88,
+      "2": 11,
+      "3": 10,
+      "4": 12,
+      "5": 8
+    }
+  }
+]

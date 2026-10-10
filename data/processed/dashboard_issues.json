@@ -1,0 +1,105 @@
+[
+  {
+    "priority": 1,
+    "title": "GPS / Live Location Stale or Wrong",
+    "problem": "Employees report vehicle location on map does not update or shows wrong position, making pickup coordination impossible.",
+    "evidence_count": 1295,
+    "evidence_pct": 12.8,
+    "hypothesis": [
+      "GPS ping interval too infrequent on driver device",
+      "Location events delayed in backend pipeline",
+      "UI renders cached location rather than latest event",
+      "Issue concentrated in specific device or network types"
+    ],
+    "fix": "Reduce GPS ping interval; add freshness timestamp to UI; alert employee when last update was >60s ago.",
+    "team": "Mobile + Backend",
+    "effort": "Medium (2\u20133 sprints)",
+    "success_metric": "95% of live locations refreshed within 30s; ETA error < 3 min",
+    "rollback": "Feature flag to revert ping interval"
+  },
+  {
+    "priority": 2,
+    "title": "Crash / Freeze / Login Failures",
+    "problem": "App crashes on launch, freezes mid-trip, or OTP/login fails \u2014 preventing employees from booking or tracking rides.",
+    "evidence_count": 921,
+    "evidence_pct": 9.1,
+    "hypothesis": [
+      "Memory leak on main thread causing ANR",
+      "OTP delivery failure due to SMS provider issues",
+      "Unhandled exceptions on network timeout"
+    ],
+    "fix": "Instrument Crashlytics; fix ANR hot-paths; add fallback OTP channel.",
+    "team": "Mobile Engineering",
+    "effort": "High (3\u20134 sprints)",
+    "success_metric": "Crash-free sessions > 99.5%; login success rate > 99%",
+    "rollback": "Staged rollout with kill switch"
+  },
+  {
+    "priority": 3,
+    "title": "No / Delayed Push Notifications",
+    "problem": "Employees miss cab arrival alerts because push notifications are not delivered or arrive very late.",
+    "evidence_count": 245,
+    "evidence_pct": 2.4,
+    "hypothesis": [
+      "FCM delivery failure in poor network conditions",
+      "Background process killed by Android Doze mode",
+      "No SMS / in-app fallback when push fails"
+    ],
+    "fix": "Add SMS fallback; test on Doze-restricted devices; monitor FCM delivery rate.",
+    "team": "Backend + Mobile",
+    "effort": "Medium (1\u20132 sprints)",
+    "success_metric": "Notification delivery rate > 99% within 60s of trigger",
+    "rollback": "SMS fallback is additive; no rollback needed"
+  },
+  {
+    "priority": 4,
+    "title": "Driver Not Assigned or Assignment Delayed",
+    "problem": "Employees receive trip confirmation but no driver is assigned, leaving them stranded.",
+    "evidence_count": 1519,
+    "evidence_pct": 15.0,
+    "hypothesis": [
+      "Driver pool exhausted for certain zones / time windows",
+      "Assignment algorithm fails silently when no driver available",
+      "Employee not notified of assignment failure"
+    ],
+    "fix": "Show explicit 'no driver available' state; trigger early re-dispatch or alternate option.",
+    "team": "Backend + Operations",
+    "effort": "Medium",
+    "success_metric": "Driver assigned within 5 min for >95% of confirmed bookings",
+    "rollback": "Operations manual override always available"
+  },
+  {
+    "priority": 5,
+    "title": "Check-in / No-show Disputes",
+    "problem": "Employees are incorrectly marked as no-shows despite being present at pickup point.",
+    "evidence_count": 129,
+    "evidence_pct": 1.3,
+    "hypothesis": [
+      "Check-in geofence radius too tight",
+      "Driver marks no-show before employee arrives",
+      "No dispute-resolution flow in employee app"
+    ],
+    "fix": "Expand geofence with grace window; add in-app dispute button; require photo evidence.",
+    "team": "Product + Mobile + Operations",
+    "effort": "Medium",
+    "success_metric": "Disputed no-shows < 1% of trips; resolution time < 24h",
+    "rollback": "Geofence adjustment is config-driven"
+  },
+  {
+    "priority": 6,
+    "title": "Support Unresponsive / Complaints Unresolved",
+    "problem": "Employees escalate issues but receive no response or resolution, eroding trust in the product.",
+    "evidence_count": 414,
+    "evidence_pct": 4.1,
+    "hypothesis": [
+      "In-app support channel not functional",
+      "Support team not receiving escalations from app",
+      "No SLA or ticket tracking visible to employee"
+    ],
+    "fix": "Add in-app ticket status; integrate with helpdesk; show resolution ETA.",
+    "team": "Product + Customer Success",
+    "effort": "Low\u2013Medium",
+    "success_metric": "Support CSAT > 80%; ticket acknowledged within 2h",
+    "rollback": "N/A \u2014 additive feature"
+  }
+]

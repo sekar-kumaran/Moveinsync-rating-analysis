@@ -1,0 +1,688 @@
+[
+  {
+    "ym": "2018-09",
+    "count": 41,
+    "mean_rating": 3.41,
+    "low_star": 12,
+    "low_pct": 29.3
+  },
+  {
+    "ym": "2018-10",
+    "count": 100,
+    "mean_rating": 3.27,
+    "low_star": 36,
+    "low_pct": 36.0
+  },
+  {
+    "ym": "2018-11",
+    "count": 74,
+    "mean_rating": 3.5,
+    "low_star": 23,
+    "low_pct": 31.1
+  },
+  {
+    "ym": "2018-12",
+    "count": 74,
+    "mean_rating": 3.01,
+    "low_star": 32,
+    "low_pct": 43.2
+  },
+  {
+    "ym": "2019-01",
+    "count": 81,
+    "mean_rating": 3.36,
+    "low_star": 28,
+    "low_pct": 34.6
+  },
+  {
+    "ym": "2019-02",
+    "count": 114,
+    "mean_rating": 2.8,
+    "low_star": 54,
+    "low_pct": 47.4
+  },
+  {
+    "ym": "2019-03",
+    "count": 128,
+    "mean_rating": 3.27,
+    "low_star": 41,
+    "low_pct": 32.0
+  },
+  {
+    "ym": "2019-04",
+    "count": 110,
+    "mean_rating": 3.03,
+    "low_star": 51,
+    "low_pct": 46.4
+  },
+  {
+    "ym": "2019-05",
+    "count": 131,
+    "mean_rating": 3.15,
+    "low_star": 53,
+    "low_pct": 40.5
+  },
+  {
+    "ym": "2019-06",
+    "count": 102,
+    "mean_rating": 3.17,
+    "low_star": 42,
+    "low_pct": 41.2
+  },
+  {
+    "ym": "2019-07",
+    "count": 136,
+    "mean_rating": 2.69,
+    "low_star": 71,
+    "low_pct": 52.2
+  },
+  {
+    "ym": "2019-08",
+    "count": 133,
+    "mean_rating": 2.6,
+    "low_star": 72,
+    "low_pct": 54.1
+  },
+  {
+    "ym": "2019-09",
+    "count": 189,
+    "mean_rating": 2.42,
+    "low_star": 115,
+    "low_pct": 60.8
+  },
+  {
+    "ym": "2019-10",
+    "count": 166,
+    "mean_rating": 2.58,
+    "low_star": 91,
+    "low_pct": 54.8
+  },
+  {
+    "ym": "2019-11",
+    "count": 206,
+    "mean_rating": 2.33,
+    "low_star": 123,
+    "low_pct": 59.7
+  },
+  {
+    "ym": "2019-12",
+    "count": 121,
+    "mean_rating": 2.21,
+    "low_star": 81,
+    "low_pct": 66.9
+  },
+  {
+    "ym": "2020-01",
+    "count": 109,
+    "mean_rating": 2.78,
+    "low_star": 56,
+    "low_pct": 51.4
+  },
+  {
+    "ym": "2020-02",
+    "count": 110,
+    "mean_rating": 2.71,
+    "low_star": 56,
+    "low_pct": 50.9
+  },
+  {
+    "ym": "2020-03",
+    "count": 53,
+    "mean_rating": 2.75,
+    "low_star": 27,
+    "low_pct": 50.9
+  },
+  {
+    "ym": "2020-04",
+    "count": 3,
+    "mean_rating": 3.67,
+    "low_star": 1,
+    "low_pct": 33.3
+  },
+  {
+    "ym": "2020-05",
+    "count": 8,
+    "mean_rating": 3.0,
+    "low_star": 4,
+    "low_pct": 50.0
+  },
+  {
+    "ym": "2020-06",
+    "count": 10,
+    "mean_rating": 3.5,
+    "low_star": 4,
+    "low_pct": 40.0
+  },
+  {
+    "ym": "2020-07",
+    "count": 15,
+    "mean_rating": 2.53,
+    "low_star": 9,
+    "low_pct": 60.0
+  },
+  {
+    "ym": "2020-08",
+    "count": 19,
+    "mean_rating": 2.42,
+    "low_star": 12,
+    "low_pct": 63.2
+  },
+  {
+    "ym": "2020-09",
+    "count": 23,
+    "mean_rating": 2.17,
+    "low_star": 16,
+    "low_pct": 69.6
+  },
+  {
+    "ym": "2020-10",
+    "count": 14,
+    "mean_rating": 2.64,
+    "low_star": 9,
+    "low_pct": 64.3
+  },
+  {
+    "ym": "2020-11",
+    "count": 8,
+    "mean_rating": 3.5,
+    "low_star": 2,
+    "low_pct": 25.0
+  },
+  {
+    "ym": "2020-12",
+    "count": 17,
+    "mean_rating": 2.65,
+    "low_star": 9,
+    "low_pct": 52.9
+  },
+  {
+    "ym": "2021-01",
+    "count": 19,
+    "mean_rating": 3.16,
+    "low_star": 7,
+    "low_pct": 36.8
+  },
+  {
+    "ym": "2021-02",
+    "count": 22,
+    "mean_rating": 2.59,
+    "low_star": 13,
+    "low_pct": 59.1
+  },
+  {
+    "ym": "2021-03",
+    "count": 26,
+    "mean_rating": 2.58,
+    "low_star": 14,
+    "low_pct": 53.8
+  },
+  {
+    "ym": "2021-04",
+    "count": 13,
+    "mean_rating": 2.92,
+    "low_star": 6,
+    "low_pct": 46.2
+  },
+  {
+    "ym": "2021-05",
+    "count": 9,
+    "mean_rating": 3.67,
+    "low_star": 3,
+    "low_pct": 33.3
+  },
+  {
+    "ym": "2021-06",
+    "count": 11,
+    "mean_rating": 2.73,
+    "low_star": 6,
+    "low_pct": 54.5
+  },
+  {
+    "ym": "2021-07",
+    "count": 11,
+    "mean_rating": 4.0,
+    "low_star": 2,
+    "low_pct": 18.2
+  },
+  {
+    "ym": "2021-08",
+    "count": 6,
+    "mean_rating": 2.33,
+    "low_star": 4,
+    "low_pct": 66.7
+  },
+  {
+    "ym": "2021-09",
+    "count": 14,
+    "mean_rating": 3.14,
+    "low_star": 7,
+    "low_pct": 50.0
+  },
+  {
+    "ym": "2021-10",
+    "count": 11,
+    "mean_rating": 3.27,
+    "low_star": 5,
+    "low_pct": 45.5
+  },
+  {
+    "ym": "2021-11",
+    "count": 30,
+    "mean_rating": 2.97,
+    "low_star": 13,
+    "low_pct": 43.3
+  },
+  {
+    "ym": "2021-12",
+    "count": 35,
+    "mean_rating": 3.49,
+    "low_star": 12,
+    "low_pct": 34.3
+  },
+  {
+    "ym": "2022-01",
+    "count": 14,
+    "mean_rating": 3.07,
+    "low_star": 5,
+    "low_pct": 35.7
+  },
+  {
+    "ym": "2022-02",
+    "count": 19,
+    "mean_rating": 3.63,
+    "low_star": 6,
+    "low_pct": 31.6
+  },
+  {
+    "ym": "2022-03",
+    "count": 50,
+    "mean_rating": 2.62,
+    "low_star": 28,
+    "low_pct": 56.0
+  },
+  {
+    "ym": "2022-04",
+    "count": 173,
+    "mean_rating": 2.06,
+    "low_star": 124,
+    "low_pct": 71.7
+  },
+  {
+    "ym": "2022-05",
+    "count": 119,
+    "mean_rating": 2.24,
+    "low_star": 76,
+    "low_pct": 63.9
+  },
+  {
+    "ym": "2022-06",
+    "count": 72,
+    "mean_rating": 2.53,
+    "low_star": 42,
+    "low_pct": 58.3
+  },
+  {
+    "ym": "2022-07",
+    "count": 85,
+    "mean_rating": 2.72,
+    "low_star": 45,
+    "low_pct": 52.9
+  },
+  {
+    "ym": "2022-08",
+    "count": 69,
+    "mean_rating": 2.86,
+    "low_star": 32,
+    "low_pct": 46.4
+  },
+  {
+    "ym": "2022-09",
+    "count": 93,
+    "mean_rating": 2.34,
+    "low_star": 60,
+    "low_pct": 64.5
+  },
+  {
+    "ym": "2022-10",
+    "count": 64,
+    "mean_rating": 2.16,
+    "low_star": 42,
+    "low_pct": 65.6
+  },
+  {
+    "ym": "2022-11",
+    "count": 60,
+    "mean_rating": 2.75,
+    "low_star": 30,
+    "low_pct": 50.0
+  },
+  {
+    "ym": "2022-12",
+    "count": 54,
+    "mean_rating": 2.63,
+    "low_star": 28,
+    "low_pct": 51.9
+  },
+  {
+    "ym": "2023-01",
+    "count": 55,
+    "mean_rating": 2.13,
+    "low_star": 37,
+    "low_pct": 67.3
+  },
+  {
+    "ym": "2023-02",
+    "count": 35,
+    "mean_rating": 2.66,
+    "low_star": 19,
+    "low_pct": 54.3
+  },
+  {
+    "ym": "2023-03",
+    "count": 62,
+    "mean_rating": 2.35,
+    "low_star": 38,
+    "low_pct": 61.3
+  },
+  {
+    "ym": "2023-04",
+    "count": 47,
+    "mean_rating": 2.3,
+    "low_star": 32,
+    "low_pct": 68.1
+  },
+  {
+    "ym": "2023-05",
+    "count": 59,
+    "mean_rating": 2.86,
+    "low_star": 29,
+    "low_pct": 49.2
+  },
+  {
+    "ym": "2023-06",
+    "count": 58,
+    "mean_rating": 2.74,
+    "low_star": 30,
+    "low_pct": 51.7
+  },
+  {
+    "ym": "2023-07",
+    "count": 91,
+    "mean_rating": 2.33,
+    "low_star": 56,
+    "low_pct": 61.5
+  },
+  {
+    "ym": "2023-08",
+    "count": 85,
+    "mean_rating": 3.15,
+    "low_star": 34,
+    "low_pct": 40.0
+  },
+  {
+    "ym": "2023-09",
+    "count": 74,
+    "mean_rating": 2.73,
+    "low_star": 38,
+    "low_pct": 51.4
+  },
+  {
+    "ym": "2023-10",
+    "count": 112,
+    "mean_rating": 2.21,
+    "low_star": 75,
+    "low_pct": 67.0
+  },
+  {
+    "ym": "2023-11",
+    "count": 87,
+    "mean_rating": 2.82,
+    "low_star": 46,
+    "low_pct": 52.9
+  },
+  {
+    "ym": "2023-12",
+    "count": 73,
+    "mean_rating": 2.56,
+    "low_star": 44,
+    "low_pct": 60.3
+  },
+  {
+    "ym": "2024-01",
+    "count": 92,
+    "mean_rating": 2.66,
+    "low_star": 48,
+    "low_pct": 52.2
+  },
+  {
+    "ym": "2024-02",
+    "count": 74,
+    "mean_rating": 2.54,
+    "low_star": 43,
+    "low_pct": 58.1
+  },
+  {
+    "ym": "2024-03",
+    "count": 60,
+    "mean_rating": 2.33,
+    "low_star": 39,
+    "low_pct": 65.0
+  },
+  {
+    "ym": "2024-04",
+    "count": 66,
+    "mean_rating": 2.29,
+    "low_star": 42,
+    "low_pct": 63.6
+  },
+  {
+    "ym": "2024-05",
+    "count": 69,
+    "mean_rating": 2.93,
+    "low_star": 31,
+    "low_pct": 44.9
+  },
+  {
+    "ym": "2024-06",
+    "count": 60,
+    "mean_rating": 2.23,
+    "low_star": 38,
+    "low_pct": 63.3
+  },
+  {
+    "ym": "2024-07",
+    "count": 105,
+    "mean_rating": 2.67,
+    "low_star": 57,
+    "low_pct": 54.3
+  },
+  {
+    "ym": "2024-08",
+    "count": 58,
+    "mean_rating": 2.38,
+    "low_star": 34,
+    "low_pct": 58.6
+  },
+  {
+    "ym": "2024-09",
+    "count": 80,
+    "mean_rating": 2.62,
+    "low_star": 43,
+    "low_pct": 53.8
+  },
+  {
+    "ym": "2024-10",
+    "count": 78,
+    "mean_rating": 2.9,
+    "low_star": 37,
+    "low_pct": 47.4
+  },
+  {
+    "ym": "2024-11",
+    "count": 61,
+    "mean_rating": 2.69,
+    "low_star": 34,
+    "low_pct": 55.7
+  },
+  {
+    "ym": "2024-12",
+    "count": 60,
+    "mean_rating": 2.8,
+    "low_star": 30,
+    "low_pct": 50.0
+  },
+  {
+    "ym": "2025-01",
+    "count": 161,
+    "mean_rating": 3.04,
+    "low_star": 74,
+    "low_pct": 46.0
+  },
+  {
+    "ym": "2025-02",
+    "count": 229,
+    "mean_rating": 3.46,
+    "low_star": 84,
+    "low_pct": 36.7
+  },
+  {
+    "ym": "2025-03",
+    "count": 226,
+    "mean_rating": 3.8,
+    "low_star": 59,
+    "low_pct": 26.1
+  },
+  {
+    "ym": "2025-04",
+    "count": 228,
+    "mean_rating": 3.84,
+    "low_star": 60,
+    "low_pct": 26.3
+  },
+  {
+    "ym": "2025-05",
+    "count": 257,
+    "mean_rating": 3.8,
+    "low_star": 73,
+    "low_pct": 28.4
+  },
+  {
+    "ym": "2025-06",
+    "count": 301,
+    "mean_rating": 3.56,
+    "low_star": 100,
+    "low_pct": 33.2
+  },
+  {
+    "ym": "2025-07",
+    "count": 293,
+    "mean_rating": 3.78,
+    "low_star": 76,
+    "low_pct": 25.9
+  },
+  {
+    "ym": "2025-08",
+    "count": 241,
+    "mean_rating": 3.68,
+    "low_star": 73,
+    "low_pct": 30.3
+  },
+  {
+    "ym": "2025-09",
+    "count": 205,
+    "mean_rating": 3.52,
+    "low_star": 68,
+    "low_pct": 33.2
+  },
+  {
+    "ym": "2025-10",
+    "count": 297,
+    "mean_rating": 3.79,
+    "low_star": 80,
+    "low_pct": 26.9
+  },
+  {
+    "ym": "2025-11",
+    "count": 160,
+    "mean_rating": 3.69,
+    "low_star": 48,
+    "low_pct": 30.0
+  },
+  {
+    "ym": "2025-12",
+    "count": 196,
+    "mean_rating": 3.84,
+    "low_star": 54,
+    "low_pct": 27.6
+  },
+  {
+    "ym": "2026-01",
+    "count": 211,
+    "mean_rating": 3.77,
+    "low_star": 60,
+    "low_pct": 28.4
+  },
+  {
+    "ym": "2026-02",
+    "count": 207,
+    "mean_rating": 3.74,
+    "low_star": 62,
+    "low_pct": 30.0
+  },
+  {
+    "ym": "2026-03",
+    "count": 197,
+    "mean_rating": 3.98,
+    "low_star": 46,
+    "low_pct": 23.4
+  },
+  {
+    "ym": "2026-04",
+    "count": 292,
+    "mean_rating": 4.03,
+    "low_star": 64,
+    "low_pct": 21.9
+  },
+  {
+    "ym": "2026-05",
+    "count": 247,
+    "mean_rating": 4.02,
+    "low_star": 53,
+    "low_pct": 21.5
+  },
+  {
+    "ym": "2026-06",
+    "count": 273,
+    "mean_rating": 3.56,
+    "low_star": 92,
+    "low_pct": 33.7
+  },
+  {
+    "ym": "2026-07",
+    "count": 285,
+    "mean_rating": 4.01,
+    "low_star": 66,
+    "low_pct": 23.2
+  },
+  {
+    "ym": "2026-08",
+    "count": 242,
+    "mean_rating": 3.65,
+    "low_star": 77,
+    "low_pct": 31.8
+  },
+  {
+    "ym": "2026-09",
+    "count": 245,
+    "mean_rating": 3.84,
+    "low_star": 68,
+    "low_pct": 27.8
+  },
+  {
+    "ym": "2026-10",
+    "count": 76,
+    "mean_rating": 3.74,
+    "low_star": 23,
+    "low_pct": 30.3
+  }
+]

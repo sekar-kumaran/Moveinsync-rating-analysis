@@ -1,0 +1,27 @@
+[
+  {
+    "rating": 1,
+    "count": 3530,
+    "pct": 34.8
+  },
+  {
+    "rating": 2,
+    "count": 624,
+    "pct": 6.2
+  },
+  {
+    "rating": 3,
+    "count": 559,
+    "pct": 5.5
+  },
+  {
+    "rating": 4,
+    "count": 1011,
+    "pct": 10.0
+  },
+  {
+    "rating": 5,
+    "count": 4420,
+    "pct": 43.6
+  }
+]

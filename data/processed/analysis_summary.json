@@ -1,0 +1,19 @@
+{
+  "total_reviews": 10144,
+  "date_min": "2018-09-12",
+  "date_max": "2026-10-09",
+  "mean_rating": 3.2136,
+  "median_rating": 4.0,
+  "std_rating": 1.803,
+  "low_star_pct": 40.95,
+  "high_star_pct": 53.54,
+  "rating_counts": {
+    "1": 3530,
+    "2": 624,
+    "3": 559,
+    "4": 1011,
+    "5": 4420
+  },
+  "months_covered": 97,
+  "generated_at": "2026-10-10 08:10:26.479231+00:00"
+}

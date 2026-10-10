@@ -1,0 +1,10 @@
+{
+  "total_reviews": 10144,
+  "mean_rating": 3.21,
+  "median_rating": 4.0,
+  "low_star_pct": 41.0,
+  "date_min": "2018-09-12",
+  "date_max": "2026-10-09",
+  "generated_at": "2026-10-10T07:47:55.848768+00:00",
+  "collection_notes": "Data collected from Google Play Store using google-play-scraper. The scraper provides access to a rolling window of publicly visible reviews. Total Play Store review count may be higher. Android and iOS data are separate; only Android reviews are included here."
+}

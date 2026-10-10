@@ -1,0 +1,5 @@
+{
+    "model_type": "TF-IDF + Logistic Regression",
+    "f1_macro": 0.8573019408208717,
+    "roc_auc": 0.9330405577044121
+}
