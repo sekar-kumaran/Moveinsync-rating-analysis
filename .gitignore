@@ -4,7 +4,7 @@ __pycache__/
 .venv/
 venv/
 .pytest_cache/
-.streamlit/
+
 *.zip
 archive/
 scratch/
