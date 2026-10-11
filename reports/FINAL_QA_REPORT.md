@@ -5,7 +5,7 @@
 - **`app/pages/5_Action_Plan.py`**: Completely removed the unsupported rating-lift forecast. Replaced it with a `Measurement Framework` defining Verified Baselines, Proposed Interventions, Leading Indicators, Outcome Metrics, Required Internal Data, and Confidence levels.
 - **`app/pages/4_ML_Model.py`**: Corrected claims regarding ML applicability. Added a limitations section clarifying the model is trained exclusively on Play Store text (not validated for HR feedback/support tickets). Clarified that raw model outputs are not calibrated probabilities. Added majority-class baseline F1 comparison.
 - **`src/generate_metrics.py`**: Strengthened the canonical ML pipeline.
-    - Dropped only trivially short/emoji-only reviews (length < 5 after cleaning), resulting in 38 legitimately dropped records, preventing the previous aggressive loss of 1,000+ short but valid reviews.
+    - Excluded only reviews with empty clean_text (length = 0 after URL and punctuation stripping, representing emoji/punctuation-only reviews), dropping exactly 38 non-informative records while retaining all 993 legitimate short reviews like 'good' and 'nice'.
     - Added deep ML metadata including exact dataset fingerprint, timestamp, per-class evaluation metrics (precision, recall, F1), and baseline comparisons.
 - **`notebooks/01_moveinsync_eda_and_ml.ipynb`**: Reconfigured to load the canonical pipeline's model and metrics rather than independently splitting data and generating a competing model artifact.
 - **`tests/test_moveinsync.py`**: Replaced the 5-test stub with a comprehensive 15-area pytest suite verifying dataset boundaries, rating logic, JSON schemas, category filters, and ensuring no duplicate leakage crosses the ML evaluation boundary.
@@ -14,7 +14,7 @@
 ## 2. Problems Corrected
 - **Competing ML Workflows:** The notebook previously overwrote the model trained by the script, leading to split/metric drift. The notebook now delegates training to the script.
 - **Fabricated Projections:** Removed fabricated rating lifts (+0.30/0.48/0.62) that were calculated without backing telemetry.
-- **Aggressive Text Cutoffs:** Corrected a recent bug where text length `>= 5` incorrectly removed valid short reviews (e.g., "Good", "Nice"). Reverted to `> 0`, properly dropping 38 emoji-only texts.
+- **Cleaning Logic Alignment:** Corrected the cleaning cutoff to `str.len() > 0`, properly dropping 38 emoji-only texts while preserving genuine short feedback.
 - **Overstated ML Claims:** Corrected terminology calling model outputs "confidence" or "calibrated probabilities", and removed unverified claims of performance on internal tickets.
 
 ## 3. Dataset Integrity
@@ -22,7 +22,7 @@
 - **Unique Raw IDs:** 10,144
 - **Cleaned Reviews:** 10,106
 - **Total Excluded:** 38 (0.37%). Exactly 38 records were excluded because their text was entirely non-alphanumeric (emojis/punctuation) and became length 0 after URL and punctuation stripping.
-- **Duplicate Texts:** 2,115 reviews share exact normalized text strings with at least one other review. These were kept for frequency analysis but correctly deduplicated *prior* to the ML train/test split.
+- **Duplicate Normalized Texts:** 2,115 duplicate normalized-text occurrences beyond the first copy (i.e. `clean_df['clean_text'].duplicated().sum()`). These represent repeated texts beyond the unique instances (e.g. repeated "good", "nice", "worst app"). They were kept in the primary EDA dataset to preserve genuine review volume, but deduplicated prior to ML train/test split to prevent data leakage.
 
 ## 4. ML Split & Evaluation Results
 - **Model:** TF-IDF (1-2 ngrams, 3000 max features) + Logistic Regression (balanced class weights).

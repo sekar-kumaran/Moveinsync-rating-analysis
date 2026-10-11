@@ -80,36 +80,40 @@ moveinsync-fde-case-study/
 ├── requirements.txt
 ├── Makefile
 ├── data/
-│   ├── raw/                          # Raw collected reviews (do not modify)
-│   │   ├── google_play_reviews.csv
+│   ├── raw/
+│   │   ├── google_play_reviews.csv       # 10,144 raw reviews collected
 │   │   ├── collection_metadata.json
 │   │   └── collection_errors.log
-│   ├── processed/                    # Cleaned and classified data
-│   │   ├── google_play_reviews_clean.csv
-│   │   ├── google_play_reviews_classified.csv
-│   │   ├── analysis_summary.json
-│   │   └── dashboard_*.json
-│   └── sample/                       # Anonymized sample for redistribution
-│       └── google_play_reviews_sample.csv
+│   └── processed/
+│       ├── google_play_reviews_clean.csv # 10,106 cleaned & categorized reviews
+│       └── metrics.json                  # Canonical dataset & evaluation metrics
+├── models/
+│   ├── low_star_classifier.pkl           # Scikit-learn ML pipeline
+│   └── model_metadata.json               # Model parameters, fingerprint & metrics
 ├── notebooks/
-│   └── 01_exploratory_data_analysis.ipynb
+│   └── 01_moveinsync_eda_and_ml.ipynb    # Unified EDA and exploration workspace
 ├── src/
-│   ├── collect_reviews.py            # Data collection pipeline
-│   ├── clean_reviews.py              # Data cleaning & validation
-│   ├── classify_reviews.py           # Review classification
-│   ├── analyze_reviews.py            # EDA & chart generation
-│   └── build_dashboard_data.py       # Dashboard data prep
+│   ├── generate_metrics.py               # Canonical pipeline for data & ML training
+│   └── moveinsync/                       # Reusable package (preprocessing, inference, loader)
 ├── app/
-│   └── streamlit_app.py              # Interactive dashboard (4 pages)
+│   ├── streamlit_app.py                  # Streamlit entry point (Executive overview)
+│   ├── utils/data.py                     # Data loaders and caching
+│   └── pages/
+│       ├── 1_Rating_Analysis.py          # Ratings distribution & monthly trends
+│       ├── 2_Complaint_Deep_Dive.py      # Category breakdowns & version trends
+│       ├── 3_Review_Explorer.py          # Interactive search & filter tool
+│       ├── 4_ML_Model.py                 # Live ML review triage & feature coefficients
+│       └── 5_Action_Plan.py              # Prioritized measurement framework & roadmap
+├── tests/
+│   └── test_moveinsync.py                # 15-area comprehensive test suite (pytest)
 ├── reports/
-│   ├── data_quality_report.md
-│   └── figures/                      # All generated charts (PNG)
-├── deliverables/
-│   ├── MoveInSync_FDE_Case_Study.pptx
-│   ├── MoveInSync_FDE_Case_Study_Report.pdf
-│   └── MoveInSync_FDE_Case_Study_Report.docx
-└── tests/
-    └── test_pipeline.py
+│   ├── FINAL_QA_REPORT.md                # Comprehensive verification & QA report
+│   ├── final_completion_report.md        # Pipeline completion & audit report
+│   ├── ml_model_details.md               # Model methodology, metrics, and limitations
+│   └── data_quality_report.md            # Raw data quality audit
+└── deliverables/
+    ├── MoveInSync_Rating_Recovery_Plan.pptx # Executive presentation
+    └── MoveInSync_FDE_Case_Study_Report.docx # Comprehensive report
 ```
 
 ---
@@ -119,8 +123,9 @@ moveinsync-fde-case-study/
 | Step | Script | Input | Output |
 |------|--------|-------|--------|
 | 1. Collect | `scripts/collect_reviews.py` | Google Play API | `data/raw/google_play_reviews.csv` |
-| 2. Generate Metrics & ML | `src/generate_metrics.py` | raw CSV | `data/processed/metrics.json`, `clean.csv`, `models/*.pkl` |
-| 3. Dashboard | `app/streamlit_app.py` | processed data | Interactive web app |
+| 2. Canonical Pipeline & ML | `src/generate_metrics.py` | raw CSV | `data/processed/google_play_reviews_clean.csv`, `metrics.json`, `models/*.pkl` |
+| 3. Test Suite | `pytest tests/` | processed data & models | 43 test assertions (100% pass) |
+| 4. Interactive Dashboard | `streamlit run app/streamlit_app.py` | processed data | Multi-page Streamlit application |
 
 ---
 
@@ -133,40 +138,40 @@ streamlit run app/streamlit_app.py --server.port 8501
 Open http://localhost:8501
 
 **Pages:**
-- Executive Overview — KPIs, key findings
-- Ratings & Trends — Rating distribution, monthly trends
-- Complaint Analysis — Category frequency, heatmap, searchable excerpts
-- Product Action Tracker — Prioritized backlog, 30-day roadmap
+1. **Executive Overview** — KPI cards, evidence-based issue hypotheses, and architecture summary.
+2. **Rating Analysis** — Rating distribution (1★ to 5★), monthly averages, and volume timeline.
+3. **Complaint Deep Dive** — 5-theme breakdown (GPS, Crashes/Login, ETA, Driver Comms, No-Show) and version matrix.
+4. **Review Explorer** — Filterable, searchable review table with instant multi-label category filters.
+5. **ML Triage Model** — Real-time review text classification with feature coefficients and score gauge.
+6. **Action Plan & Roadmap** — 30-day operational sprint with leading indicators and internal data requirements.
 
 ---
 
 ## Key Findings
 
-1. **GPS / Live Location** — Most frequently mentioned in 1★ reviews. Stale or wrong location prevents employees from coordinating pickup.
-2. **App Crashes & Login** — Crashes, ANRs, and OTP failures prevent access entirely.
-3. **Push Notifications** — Missed cab arrival alerts; no SMS fallback.
-4. **Vehicle Assignment** — Silent failures when no driver is available.
-5. **No-show Disputes** — Employees marked absent with no in-app recourse.
+1. **GPS / Live Location (1,415 reviews, 57.2% low-star)** — Stale or inaccurate driver location prevents employees from coordinating pickup.
+2. **App Crashes & Login/OTP (1,017 reviews, 78.0% low-star)** — Crashes, ANRs, and OTP delivery failures block application access entirely.
+3. **Driver Communication (798 reviews, 61.4% low-star)** — Driver call disconnects, rude behavior, or refusal to follow corporate routing.
+4. **ETA & Late Pickup (597 reviews, 64.0% low-star)** — Delays causing missed office shifts.
+5. **No-Show & Check-in Disputes (132 reviews, 75.0% low-star)** — Employees unjustly marked absent at the gate with no in-app recourse.
 
 ---
 
-## Methodology
+## Methodology & Verification
 
-- **Collection**: `google-play-scraper` (Python), paginated, NEWEST + MOST_RELEVANT sorts, deduplicated
-- **Classification**: Transparent keyword rule engine (multi-label, auditable)
-- **EDA**: Pandas, Matplotlib, Seaborn, Plotly
-- **Dashboard**: Streamlit + Plotly
-- **Prioritization**: Severity × Frequency × Confidence model, adjusted for effort
+- **Collection**: `google-play-scraper` (Python), paginated, NEWEST + MOST_RELEVANT sorts (10,144 unique reviews).
+- **Cleaning**: 38 non-informative reviews excluded (text became empty after emoji/punctuation normalization), leaving 10,106 clean records. 2,115 duplicate normalized-text occurrences beyond the first copy were retained for genuine volume analysis but deduplicated prior to ML splitting.
+- **Classification**: Transparent multi-label keyword regex engine across 5 operational themes.
+- **ML Classifier**: TF-IDF (3,000 features, 1-2 n-grams) + Logistic Regression (`class_weight='balanced'`). Macro F1: 0.843, ROC-AUC: 0.909 (beats baseline Macro F1 of 0.335).
+- **Prioritization Framework**: Evidence-based measurement framework replacing speculative rating lift forecasts with leading telemetry indicators.
 
 ---
 
 ## Limitations
 
-- `google-play-scraper` provides access to a rolling window of publicly visible reviews. The complete historical dataset may not be accessible.
-- Review counts may not represent the full population (sampling bias toward recent/relevant reviews).
-- Keyword-based classification has recall/precision tradeoffs; validated on a manual subset.
-- No access to internal telemetry, crash logs, or operational data — root causes are hypotheses requiring internal validation.
-- Android and iOS data are kept separate. This project covers Android only.
+- Public Google Play reviews reflect user-perceived symptoms; internal Crashlytics stack traces, driver-app GPS ping intervals, and FCM delivery receipts are required to confirm root causes.
+- The ML classifier was trained exclusively on Play Store reviews for `com.moveinsync.ets`; performance on internal enterprise support tickets or HR surveys has not been validated.
+- Model scores are raw logistic regression sigmoid scores and are not calibrated probabilities.
 
 ---
 
@@ -174,25 +179,25 @@ Open http://localhost:8501
 
 | File | Description |
 |------|-------------|
-| `deliverables/MoveInSync_FDE_Case_Study.pptx` | 12-slide presentation |
-| `deliverables/MoveInSync_FDE_Case_Study_Report.pdf` | Full report (PDF) |
-| `deliverables/MoveInSync_FDE_Case_Study_Report.docx` | Editable report (DOCX) |
+| `deliverables/MoveInSync_Rating_Recovery_Plan.pptx` | Executive presentation |
+| `deliverables/MoveInSync_FDE_Case_Study_Report.docx` | Editable comprehensive report |
+| `reports/FINAL_QA_REPORT.md` | Verification & QA report |
+| `reports/ml_model_details.md` | Model methodology & metrics |
 | `reports/data_quality_report.md` | Data quality assessment |
-| `reports/figures/` | All EDA charts |
-| `app/streamlit_app.py` | Interactive dashboard |
+| `app/streamlit_app.py` | Interactive multi-page dashboard |
 
 ---
 
-## Regenerating Data
+## Regenerating Data & Pipeline
 
-If raw review text cannot be redistributed, run the collection pipeline to regenerate:
+To run the canonical data pipeline and verify model generation:
 
 ```bash
-python src/collect_reviews.py --app-id com.moveinsync.ets
+python src/generate_metrics.py
 ```
 
-The pipeline is idempotent and deduplicates by review ID.
+To run the full test suite:
 
----
-
-*Built for the MoveInSync Forward Deployed Engineer candidate assignment.*
+```bash
+pytest tests/
+```

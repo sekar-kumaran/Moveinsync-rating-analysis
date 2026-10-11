@@ -31,7 +31,7 @@ def load_reviews() -> pd.DataFrame:
     df = df.dropna(subset=["star_rating"])
     df["star_rating"]  = df["star_rating"].astype(int)
     df["review_date"]  = pd.to_datetime(df["review_date"], utc=True, errors="coerce")
-    df["year_month"]   = df["review_date"].dt.to_period("M").dt.to_timestamp()
+    df["year_month"]   = df["review_date"].dt.tz_localize(None).dt.to_period("M").dt.to_timestamp()
     df["year"]         = df["review_date"].dt.year
     df["month"]        = df["review_date"].dt.month
     df["day_of_week"]  = df["review_date"].dt.day_name()

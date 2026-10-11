@@ -238,25 +238,25 @@ with col_a:
     <b>Data Collection</b><br>
     Scraped <b>10,144 public reviews</b> for <code>com.moveinsync.ets</code> from Google Play Store
     using <code>google-play-scraper</code> (Python). No internal data -- fully public.<br><br>
-    <b>Cleaning</b><br>
-    Deduplicated on review_id. Validated ratings 1-5 only. Parsed dates with UTC normalisation.
-    Filtered reviews &lt; 5 chars. Result: 10,144 clean records.<br><br>
+    <b>Cleaning & Normalization</b><br>
+    Deduplicated on review_id (all 10,144 unique). Validated star ratings 1–5. Parsed dates with UTC normalisation.
+    Excluded exactly 38 records that became empty after text cleaning (emoji/punctuation only). Result: <b>10,106 clean records</b>.<br><br>
     <b>Complaint Classification</b><br>
     Keyword regex across 5 themes: GPS, Crashes/Login, ETA, Driver Communication, No-Show.
-    Transparent, auditable, no black box.
+    Transparent, auditable, rule-based categorization.
     """)
 
 with col_b:
     info_box("""
-    <b>ML Model</b><br>
+    <b>ML Triage Model</b><br>
     TF-IDF (3000 features, 1-2 n-grams) + Logistic Regression (balanced class weights).
-    Trained on 80% stratified split with identical review text removed.<br><br>
-    <b>Key Assumptions</b><br>
-    -- Play Store reviews are a representative but biased sample<br>
-    -- Root causes are hypothesised from symptoms; internal Crashlytics and GPS logs would confirm<br>
-    -- Rating lift forecasts are conservative linear estimates<br><br>
+    Trained on 80% stratified split with 2,115 duplicate normalized-text occurrences beyond the first copy removed prior to split.<br><br>
+    <b>Key Principles & Measurement</b><br>
+    -- Public reviews capture user-perceived symptoms; internal telemetry is required to verify root causes.<br>
+    -- No speculative rating-lift forecasts: interventions are evaluated using an evidence-based measurement framework with leading telemetry indicators.<br>
+    -- Model scores represent relative likelihood ranking, not calibrated statistical probabilities.<br><br>
     <b>Tools Used</b><br>
-    google-play-scraper &middot; pandas &middot; scikit-learn &middot; Plotly &middot; Streamlit &middot; Jupyter
+    google-play-scraper &middot; pandas &middot; scikit-learn &middot; Plotly &middot; Streamlit &middot; pytest
     """)
 
 # Download

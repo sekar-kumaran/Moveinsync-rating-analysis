@@ -67,7 +67,7 @@ def main():
     metrics["unclassified_reviews"] = len(clean_df) - int(clean_df["is_categorized"].sum())
     metrics["unclassified_share"] = round(metrics["unclassified_reviews"] / metrics["clean_reviews"], 3)
     
-    metrics["duplicate_texts"] = clean_df["clean_text"].duplicated().sum()
+    metrics["duplicate_texts"] = int(clean_df["clean_text"].duplicated().sum())
     metrics["low_star_reviews"] = int(clean_df["is_low_star"].sum())
     metrics["low_star_share"] = round(metrics["low_star_reviews"] / metrics["clean_reviews"], 3)
     metrics["mean_rating"] = round(clean_df["star_rating"].mean(), 2)

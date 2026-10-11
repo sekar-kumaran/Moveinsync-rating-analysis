@@ -19,7 +19,7 @@
         "cat_noshow_checkin_low_star": 99,
         "unclassified_reviews": 6910,
         "unclassified_share": 0.684,
-        "duplicate_texts": 2115.0,
+        "duplicate_texts": 2115,
         "low_star_reviews": 4153,
         "low_star_share": 0.411,
         "mean_rating": 3.21
@@ -28,7 +28,7 @@
         "model_version": "1.0.0",
         "model_artifact": "low_star_classifier.pkl",
         "positive_class": "1-2 stars (is_low_star=1)",
-        "evaluation_timestamp": "2026-10-10T15:29:10.127361Z",
+        "evaluation_timestamp": "2026-10-11T10:51:26.154726Z",
         "dataset_fingerprint": "9e1485f8fe40",
         "split_strategy": "Random 80/20 split after removing duplicate normalized texts",
         "sklearn_version": "1.4.2",

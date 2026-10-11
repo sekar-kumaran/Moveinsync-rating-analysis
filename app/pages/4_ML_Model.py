@@ -142,7 +142,7 @@ examples = [
 chosen = st.selectbox("Quick examples (or type your own below)", examples)
 
 review_input = st.text_area(
-    "Paste review / feedback / support ticket text here:",
+    "Paste review or feedback text here (Play Store review domain):",
     value="" if chosen == "Select an example..." else chosen,
     height=120,
     placeholder="e.g. App crashed during OTP entry, missed my cab to work. This has happened 3 times."
@@ -160,7 +160,7 @@ if st.button("Predict Severity", type="primary"):
             st.error(result["error"])
         else:
             is_low = result["is_low_star"]
-            low_prob = result["confidence"] if is_low else 1 - result["confidence"]
+            low_prob = result.get("low_star_score", result.get("model_score", 0.5))
             
             col_res, col_detail = st.columns([1, 2])
             with col_res:
@@ -197,7 +197,7 @@ if st.button("Predict Severity", type="primary"):
                     threshold=dict(line=dict(color="#ef4444", width=2),
                                    thickness=0.75, value=60),
                 ),
-                title=dict(text="P(Low-Star)", font=dict(color="#1e3a5f")),
+                title=dict(text="Model Score (Low-Star)", font=dict(color="#1e3a5f")),
             ))
             fig_gauge.update_layout(paper_bgcolor="rgba(0,0,0,0)",
                                     height=220, margin=dict(t=30, b=10, l=10, r=10))
